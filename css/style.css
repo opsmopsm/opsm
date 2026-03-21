@@ -1,0 +1,693 @@
+:root {
+    /* Colors - Dark Theme with Neon Blue and Pastel Purple */
+    --bg-dark: #0a0a0f;
+    --bg-surface: rgba(20, 20, 30, 0.7);
+    --bg-alt: #12121c;
+    
+    --neon-blue: #00f3ff;
+    --neon-blue-glow: rgba(0, 243, 255, 0.5);
+    
+    --pastel-purple: #c8a2c8;
+    --pastel-purple-glow: rgba(200, 162, 200, 0.5);
+    
+    --text-primary: #f0f0f5;
+    --text-secondary: #a0a0b0;
+    
+    --border-glass: rgba(255, 255, 255, 0.1);
+    
+    /* Typography */
+    --font-heading: 'Outfit', 'Noto Sans JP', sans-serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    
+    /* Layout properties */
+    --container-width: 1100px;
+    --header-height: 80px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Typography */
+h1, h2, h3, h4, .logo {
+    font-family: var(--font-heading);
+    font-weight: 800;
+}
+
+a {
+    color: var(--neon-blue);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--pastel-purple);
+    text-shadow: 0 0 10px var(--pastel-purple-glow);
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header & Glassmorphism Navigation */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    background: rgba(10, 10, 15, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-glass);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+.header-container {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    text-shadow: 0 0 10px var(--neon-blue-glow);
+}
+
+.logo span {
+    color: var(--neon-blue);
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.main-nav a {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+    color: var(--neon-blue);
+    text-shadow: 0 0 8px var(--neon-blue-glow);
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 30px;
+    height: 24px;
+    position: relative;
+    z-index: 1001;
+}
+
+.mobile-menu-btn span {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: var(--text-primary);
+    transition: 0.3s;
+}
+
+.mobile-menu-btn span:nth-child(1) { top: 0; }
+.mobile-menu-btn span:nth-child(2) { top: 11px; }
+.mobile-menu-btn span:nth-child(3) { top: 22px; }
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: var(--header-height);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+}
+
+.hero-title {
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+}
+
+.hero-title .highlight {
+    background: linear-gradient(90deg, var(--neon-blue), var(--pastel-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+/* Background Blobs (Futuristic feel) */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 1;
+    opacity: 0.5;
+    animation: float 10s infinite alternate ease-in-out;
+}
+
+.blob-blue {
+    width: 400px;
+    height: 400px;
+    background: var(--neon-blue);
+    top: -100px;
+    right: -100px;
+}
+
+.blob-purple {
+    width: 500px;
+    height: 500px;
+    background: var(--pastel-purple);
+    bottom: -150px;
+    left: -150px;
+    animation-delay: -5s;
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 50px) scale(1.1); }
+}
+
+/* Base Sections */
+.section {
+    padding: 100px 0;
+    position: relative;
+    z-index: 10;
+}
+
+.alt-bg {
+    background-color: var(--bg-alt);
+    border-top: 1px solid var(--border-glass);
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.section-title {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--pastel-purple), var(--neon-blue), transparent);
+}
+
+.subsection {
+    margin-bottom: 2.5rem;
+    background: var(--bg-surface);
+    padding: 2rem;
+    border-radius: 20px; /* Friendly layout - rounded corners */
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.subsection:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--neon-blue-glow);
+    border-color: rgba(0, 243, 255, 0.3);
+}
+
+.subsection-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--neon-blue);
+}
+
+/* Gallery & Cards Placeholders */
+.gallery-placeholder {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.gallery-item {
+    height: 200px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    border: 1px dashed var(--pastel-purple);
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.card {
+    background: var(--bg-surface);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border-glass);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px var(--pastel-purple-glow);
+    border-color: rgba(200, 162, 200, 0.5);
+}
+
+.card-image {
+    height: 200px;
+    background: #2a2a35;
+}
+
+.card-image.bg-blue {
+    background: linear-gradient(45deg, #1a1a25, #004455);
+}
+
+.card-image.bg-purple {
+    background: linear-gradient(45deg, #1a1a25, #442255);
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
+.card-title {
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+/* Links */
+.links-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--neon-blue);
+    border-radius: 30px;
+    color: var(--text-primary);
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    backdrop-filter: blur(5px);
+    position: relative;
+    overflow: hidden;
+}
+
+.link-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(45deg, var(--neon-blue), var(--pastel-purple));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.link-btn:hover {
+    color: #fff;
+    border-color: transparent;
+    text-shadow: none;
+    box-shadow: 0 0 20px var(--neon-blue-glow);
+}
+
+.link-btn:hover::before {
+    opacity: 1;
+}
+
+/* Footer */
+.footer {
+    padding: 2rem 0;
+    text-align: center;
+    background: #050508;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-glass);
+}
+
+/* Text Formatting */
+.text-block p {
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+/* History Timeline */
+.history-timeline {
+    list-style: none;
+    padding-left: 20px;
+    border-left: 2px solid var(--neon-blue);
+}
+
+.history-timeline li {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-left: 1.5rem;
+}
+
+.history-timeline li::before {
+    content: '';
+    position: absolute;
+    left: -21px;
+    top: 5px;
+    width: 14px;
+    height: 14px;
+    background: var(--bg-dark);
+    border: 3px solid var(--neon-blue);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--neon-blue-glow);
+}
+
+.history-timeline .date {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--pastel-purple);
+    margin-bottom: 0.5rem;
+}
+
+/* Series Cards */
+.series-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.series-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.series-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.series-media {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.series-image {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border-glass);
+}
+
+.series-video {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border-glass);
+}
+
+.highlight-blue {
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px var(--neon-blue-glow);
+}
+
+.highlight-purple {
+    color: var(--pastel-purple);
+    text-shadow: 0 0 10px var(--pastel-purple-glow);
+}
+
+.audio-container {
+    background: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.audio-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+}
+
+/* Art Gallery Grid */
+.art-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+.art-grid .gallery-item {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    border: 1px solid var(--border-glass);
+}
+
+.art-grid .gallery-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px var(--neon-blue-glow);
+}
+
+/* Lightbox */
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+.lightbox.active {
+    display: flex;
+}
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 0 30px var(--pastel-purple-glow);
+}
+.lightbox-close {
+    position: absolute;
+    top: 20px; right: 40px;
+    color: #fff;
+    font-size: 40px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.lightbox-close:hover {
+    color: var(--neon-blue);
+}
+
+/* Modifying Discography Card Image Ratio */
+#music .card-image {
+    aspect-ratio: 2 / 3;
+    height: auto;
+}
+
+/* Art Gallery Grid */
+.art-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+.art-grid .gallery-item {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    border: 1px solid var(--border-glass);
+}
+
+.art-grid .gallery-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px var(--neon-blue-glow);
+}
+
+/* Lightbox */
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+.lightbox.active {
+    display: flex;
+}
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 0 30px var(--pastel-purple-glow);
+}
+.lightbox-close {
+    position: absolute;
+    top: 20px; right: 40px;
+    color: #fff;
+    font-size: 40px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.lightbox-close:hover {
+    color: var(--neon-blue);
+}
+
+/* Modifying Discography Card Image Ratio */
+#music .card-image {
+    aspect-ratio: 2 / 3;
+    height: auto;
+}
+
+/* Suno Link Icon in Discography */
+.suno-link-icon {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--bg-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid var(--neon-blue);
+    box-shadow: 0 0 10px var(--neon-blue-glow);
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    z-index: 10;
+}
+.suno-link-icon:hover {
+    transform: scale(1.15);
+    border-color: var(--pastel-purple);
+    box-shadow: 0 0 15px var(--pastel-purple-glow);
+}
+.suno-link-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Media Queries */
+@media (max-width: 992px) {
+    .art-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+    .art-grid { grid-template-columns: repeat(2, 1fr); }
+    .series-content {
+        grid-template-columns: 1fr;
+    }
+
+    .main-nav {
+        position: fixed;
+        top: var(--header-height);
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - var(--header-height));
+        background: rgba(10, 10, 15, 0.95);
+        backdrop-filter: blur(15px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: left 0.3s ease;
+    }
+
+    .main-nav.active {
+        left: 0;
+    }
+
+    .main-nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .main-nav a {
+        font-size: 1.2rem;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* Audio Styling */
+audio {
+    border-radius: 30px;
+    height: 40px;
+}
+audio::-webkit-media-controls-panel {
+    background-color: var(--bg-dark);
+}
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-mute-button {
+    background-color: var(--neon-blue);
+    border-radius: 50%;
+}
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+    color: var(--text-primary);
+}
+audio::-webkit-media-controls-timeline {
+    background-color: var(--pastel-purple);
+    border-radius: 10px;
+}

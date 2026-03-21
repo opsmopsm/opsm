@@ -1,0 +1,37 @@
+[
+  {
+    "name": "スぺ恋ちゃん",
+    "description": "『スペースシップの恋』の主人公。ピュアで健気。頑張って歌います。短いアニメになったらいいなぁ。",
+    "image": "assets/music/characters/スぺ恋ちゃん/af1f1252.png"
+  },
+  {
+    "name": "ディス姉",
+    "description": "「テキーラディストーション」という曲の登場人物。テキーラを何杯飲んでも、顔色一つ変わらない酒豪。昔行ったコンカフェバーの店員さんがモチーフです。",
+    "image": "assets/music/characters/ディス姉/e022238d.png"
+  },
+  {
+    "name": "ネナ",
+    "description": "八百屋発ベジタブルシンガーNeNa(根菜)。デビュー曲は「大根ラブレター」",
+    "image": "assets/music/characters/ネナ/16a71c13.png"
+  },
+  {
+    "name": "マラカス島田",
+    "description": "楽器はマラカスだけの7人バンド“EnjoyZEE(エンジョイ勢)”のボーカル兼メインマラカスを担当している“マラカス島田”。ソロデビュー曲はあのセリフを題材にした“そんなこといってもしょうがないじゃないか”。日本の未来を明るくするため、早朝から全力で魂の歌声を届ける！",
+    "image": "assets/music/characters/マラカス島田/6a113196.png"
+  },
+  {
+    "name": "モモンガ",
+    "description": "「とんでけ！モモンガ！ジャンピン！カックー！」よりOPSMの代わりに動いてくれています。",
+    "image": "assets/music/characters/モモンガ/hf_20260210_182432_5a07e66c-aa91-4f0d-b7be-b3f660a852c8.jpeg"
+  },
+  {
+    "name": "ルナ",
+    "description": "「断腕の継承者ルナ」というプロジェクトの主人公。右腕を戦争で失った。悪魔の右腕、唯一の適合者。",
+    "image": "assets/music/characters/ルナ/hf_20260305_130752_0577725a-f0b7-4532-a3af-d04baec8deb9.jpeg"
+  },
+  {
+    "name": "神様",
+    "description": "『二礼二拍手一礼』という曲の登場人物。礼儀には寛容。座右の銘は\"やるならやる、やらないならやらない\"。強めのお酒が大好き。",
+    "image": "assets/music/characters/神様/hf_20260210_184438_01864d57-aff3-4fdf-a197-e9f75a1db4c7.jpeg"
+  }
+]
