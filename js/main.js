@@ -66,7 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const cleanedTitle = track.title.replace(/^[0-9]+_/, ''); // Remove date prefix
 
-                    const defaultImage = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231a1a25"/><circle cx="100" cy="100" r="40" fill="%2300f3ff" opacity="0.3"/><circle cx="100" cy="100" r="20" fill="%2300f3ff"/></svg>';
+                    const defaultImageSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a25"/><circle cx="100" cy="100" r="40" fill="#00f3ff" opacity="0.3"/><circle cx="100" cy="100" r="20" fill="#00f3ff"/></svg>';
+                    const defaultImage = 'data:image/svg+xml,' + encodeURIComponent(defaultImageSvg);
                     
                     // Encode URI components to fix '#' and spaces
                     const encodePath = (path) => path ? path.split('/').map(encodeURIComponent).join('/') : null;
@@ -116,7 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const card = document.createElement('div');
                     card.className = 'card character-card';
                     
-                    const defaultImage = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231a1a25"/><circle cx="100" cy="100" r="40" fill="%23c8a2c8" opacity="0.3"/><circle cx="100" cy="100" r="20" fill="%23c8a2c8"/></svg>';
+                    const defaultImageSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a25"/><circle cx="100" cy="100" r="40" fill="#c8a2c8" opacity="0.3"/><circle cx="100" cy="100" r="20" fill="#c8a2c8"/></svg>';
+                    const defaultImage = 'data:image/svg+xml,' + encodeURIComponent(defaultImageSvg);
                     
                     // Encode URI components to fix path loading issues
                     const encodePath = (path) => path ? path.split('/').map(encodeURIComponent).join('/') : null;
