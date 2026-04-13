@@ -75,6 +75,9 @@ function navigate(path) {
         case 'series':
             content = renderSeries();
             break;
+        case 'links':
+            content = renderLinks();
+            break;
     }
 
     // Trigger transition
@@ -205,6 +208,24 @@ function renderSeries() {
                            <i data-lucide="video"></i> 🎥 Movie を観る
                      </button>
                 </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderLinks() {
+    return `
+        <h2 class="page-title">Links</h2>
+        <div class="glass-panel text-center">
+            <h3 style="color: var(--text-secondary); margin-bottom: 30px;">External Links</h3>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                 <a href="https://suno.com/@opsm" target="_blank" style="padding: 15px 30px; font-weight: bold; background: #333; color: white; border-radius: 8px; text-decoration: none;">Suno</a>
+                 <a href="https://www.youtube.com/@OPSM_opsm" target="_blank" style="padding: 15px 30px; font-weight: bold; background: #c4302b; color: white; border-radius: 8px; text-decoration: none;">YouTube</a>
+                 <a href="https://www.tiktok.com/@opsm_opsm" target="_blank" style="padding: 15px 30px; font-weight: bold; background: #000; color: white; border-radius: 8px; border: 1px solid #333; text-decoration: none;">TikTok</a>
+                 <a href="https://www.chichi-pui.com/" target="_blank" style="padding: 15px 30px; font-weight: bold; background: #2b70c4; color: white; border-radius: 8px; text-decoration: none;">ちちぷい</a>
+                 <a href="https://www.aipictors.com/users/7218661c-88a6-f43e-5a90-08c52fb4da4d" target="_blank" style="padding: 15px 30px; font-weight: bold; background: #2bc490; color: white; border-radius: 8px; text-decoration: none;">あいぴく</a>
+                 <a href="https://note.com/opsm" target="_blank" style="padding: 15px 30px; font-weight: bold; background: #2bc47e; color: white; border-radius: 8px; text-decoration: none;">Note</a>
+                 <a href="https://x.com/OPSM_opsm" target="_blank" style="padding: 15px 30px; font-weight: bold; background: #1da1f2; color: white; border-radius: 8px; text-decoration: none;">X (Twitter)</a>
             </div>
         </div>
     `;
