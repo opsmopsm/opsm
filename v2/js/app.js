@@ -188,10 +188,11 @@ function renderSeries() {
             <div style="flex: 1; min-width: 250px;">
                 <h3 style="color: var(--neon-blue); margin-bottom: 1rem;">お相撲戦隊ドスコイジャー！</h3>
                 <p>遥か遠い宇宙の彼方から、突如として地球を襲った謎の宇宙人「ヒョロガリー」。彼らの目的はただ一つ、貧しい星に変えることだった...</p>
-                <video controls style="width: 100%; border-radius: 12px; margin-top: 20px; border: 1px solid var(--border-glass);">
-                    <source src="${getSafeUrl('assets/series/dosukoi-jah/20251230_1927_01kdjsqxy7f3y90qhr8jx4p7b1.mp4')}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+                <div style="margin-top: 20px;">
+                     <button class="disco-modal-play" onclick="openVideoModal('${getSafeUrl('assets/series/dosukoi-jah/20251230_1927_01kdjsqxy7f3y90qhr8jx4p7b1.mp4')}')">
+                           <i data-lucide="video"></i> 🎥 Movie を観る
+                     </button>
+                </div>
             </div>
         </div>
         <div class="glass-panel" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
@@ -199,10 +200,11 @@ function renderSeries() {
             <div style="flex: 1; min-width: 250px;">
                 <h3 style="color: var(--pastel-purple); margin-bottom: 1rem;">断腕の継承者ルナ</h3>
                 <p>遠い未来、地球は宇宙の敵と戦争していました。最強の人型兵器Akumaの右腕を装備して戦う運命を背負った少女の物語。</p>
-                <video controls style="width: 100%; border-radius: 12px; margin-top: 20px; border: 1px solid var(--border-glass);">
-                    <source src="${getSafeUrl('assets/series/luna/変形ガード.mp4')}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+                <div style="margin-top: 20px;">
+                     <button class="disco-modal-play" onclick="openVideoModal('${getSafeUrl('assets/series/luna/変形ガード.mp4')}')">
+                           <i data-lucide="video"></i> 🎥 Movie を観る
+                     </button>
+                </div>
             </div>
         </div>
     `;
@@ -294,5 +296,19 @@ window.closePlayer = function() {
 
 window.closeDiscoModal = function() {
     document.getElementById('disco-modal').classList.remove('active');
+}
+
+window.openVideoModal = function(url) {
+    const videoElem = document.getElementById('video-modal-content');
+    videoElem.src = url;
+    document.getElementById('video-modal').classList.add('active');
+    videoElem.play();
+}
+
+window.closeVideoModal = function() {
+    const videoElem = document.getElementById('video-modal-content');
+    videoElem.pause();
+    videoElem.src = '';
+    document.getElementById('video-modal').classList.remove('active');
 }
 

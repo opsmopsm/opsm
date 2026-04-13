@@ -53,9 +53,24 @@
         </nav>
     </header>
 
-    <main id="app-root" class="page-transition">
+    <main id="app-root" class="page-transition" style="min-height: 80vh;">
         <!-- Views will be injected here -->
     </main>
+
+    <!-- Global Footer for Links -->
+    <footer style="text-align: center; padding: 40px 20px 120px; border-top: 1px solid var(--border-glass); background: rgba(10,10,15,0.8);">
+        <h3 style="color: var(--text-secondary); margin-bottom: 20px;">External Links</h3>
+        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+             <a href="https://suno.com/@opsm" target="_blank" style="padding: 10px 20px; background: #333; color: white; border-radius: 8px;">Suno</a>
+             <a href="https://www.youtube.com/@OPSM_opsm" target="_blank" style="padding: 10px 20px; background: #c4302b; color: white; border-radius: 8px;">YouTube</a>
+             <a href="https://www.tiktok.com/@opsm_opsm" target="_blank" style="padding: 10px 20px; background: #000; color: white; border-radius: 8px; border: 1px solid #333;">TikTok</a>
+             <a href="https://www.chichi-pui.com/" target="_blank" style="padding: 10px 20px; background: #2b70c4; color: white; border-radius: 8px;">ちちぷい</a>
+             <a href="https://www.aipictors.com/users/7218661c-88a6-f43e-5a90-08c52fb4da4d" target="_blank" style="padding: 10px 20px; background: #2bc490; color: white; border-radius: 8px;">あいぴく</a>
+             <a href="https://note.com/opsm" target="_blank" style="padding: 10px 20px; background: #2bc47e; color: white; border-radius: 8px;">Note</a>
+             <a href="https://x.com/OPSM_opsm" target="_blank" style="padding: 10px 20px; background: #1da1f2; color: white; border-radius: 8px;">X (Twitter)</a>
+        </div>
+        <p style="margin-top: 30px; font-size: 0.9rem; color: #666;">&copy; 2026 OPSM AI Creative Base</p>
+    </footer>
 
     <!-- Fixed Global Audio Player -->
     <div id="global-player" class="global-player hidden">
@@ -80,6 +95,12 @@
     <div id="lightbox" class="lightbox">
         <button class="lightbox-close"><i data-lucide="x"></i></button>
         <img class="lightbox-content" id="lightbox-img" alt="Gallery">
+    </div>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="lightbox">
+        <button class="lightbox-close" onclick="closeVideoModal()"><i data-lucide="x"></i></button>
+        <video id="video-modal-content" class="lightbox-content" controls style="background: black; border-radius: 12px; width: 90%; max-width: 800px;"></video>
     </div>
 
     <!-- Discography Modal -->
