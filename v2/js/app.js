@@ -97,7 +97,7 @@ function navigate(path) {
 function renderHome() {
     return `
         <div class="hero-content">
-            <h1 class="page-title" style="font-size: 4rem;">OPSM <br>AI Creative Base</h1>
+            <h1 class="page-title" style="font-size: 4rem;">OPSM <br>の秘密基地</h1>
             <p style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 2rem;">ゆっくりしていってくださいね(´▽｀)</p>
             <button class="nav-link" data-path="music" style="padding: 15px 30px; border-radius: 30px; border: none; background: linear-gradient(90deg, var(--neon-blue), var(--pastel-purple)); color: white; cursor: pointer; font-size: 1.1rem; font-weight: bold; box-shadow: 0 0 20px var(--pastel-purple-glow);">
                 最新の楽曲を聴く
@@ -109,15 +109,23 @@ function renderHome() {
 function renderAbout() {
     return `
         <h2 class="page-title">What's OPSM?</h2>
-        <div class="glass-panel">
+        <div class="glass-panel text-block">
             <h3 style="color: var(--neon-blue); margin-bottom: 1rem;">About</h3>
             <p>AIを頼り、失敗しながら、色々調べながら、草の根魂でやってます。<br>
-            『やってみたい！』が軸のEnjoy勢です。</p>
-            <p>自分たちで歌詞を書くことも、難しいこともできないですが、皆さんのセンスから元気をもらっています🎶</p>
+            『やってみたい！』が軸のEnjoy勢です。<br>
+            自分たちの聴きたい曲をAIに作ってもらってますが、思い通りにするのは本当に難しい…<br>
+            みなさんどうやって作ってんだろう。。。いろんな発想や手法がありそうです〜。。。<br>
+            自分たちで歌詞を書くことも、難しいこともできないです。<br>
+            みなさんのセンス、創作力には本当に圧倒されています。<br>
+            それと元気ももらっております🎶</p>
             
             <h3 style="color: var(--pastel-purple); margin-top: 2rem; margin-bottom: 1rem;">名前の由来</h3>
             <p><strong>OPSM（おぽ）</strong></p>
-            <p>名前の由来は「オポッサム」です。あまり被らなさそうな動物を選び、DAIGOさんのような略し方でOPSMに！<br>もっと気軽に呼んでもらえるように「おぽ」という呼び名もつけています。</p>
+            <p>名前の由来は「オポッサム」です。</p>
+            <p>かわいい動物の名前にしたかったのですが、有名な動物はすでに使われていることが多く、個性を出すのが難しいと思いました。<br>
+            そこで、あまり被らなさそうな動物としてオポッサムを選びました。<br>
+            ただ、そのままだと少し長いので、DAIGOさんのような略し方のノリでOPSMに。<br>
+            そして、もっと気軽に呼んでもらえるように<strong>「おぽ」</strong>という呼び名もつけています。</p>
         </div>
     `;
 }
@@ -186,11 +194,22 @@ function renderMovie() {
 function renderSeries() {
     return `
         <h2 class="page-title">Series</h2>
+        
         <div class="glass-panel" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
             <img src="assets/series/dosukoi-jah/TOP.png" style="width: 100%; max-width: 300px; border-radius: 12px;" alt="ドスコイジャー">
-            <div style="flex: 1; min-width: 250px;">
+            <div style="flex: 1; min-width: 250px;" class="text-block">
                 <h3 style="color: var(--neon-blue); margin-bottom: 1rem;">お相撲戦隊ドスコイジャー！</h3>
-                <p>遥か遠い宇宙の彼方から、突如として地球を襲った謎の宇宙人「ヒョロガリー」。彼らの目的はただ一つ、貧しい星に変えることだった...</p>
+                <p><strong>【ストーリー】</strong></p>
+                <p>遥か遠い宇宙の彼方から、突如として地球を襲った謎の宇宙人「ヒョロガリー」。<br>
+                彼らの目的はただ一つ、豊かになりすぎた地球から全ての"豊かさ"を奪い去り、飢えに満ちた星に変えることだった。<br>
+                食料を枯渇させ、人々を飢餓で痩せ細らせようとするヒョロガリーの猛攻に、世界は絶望の淵に立たされる。</p>
+                <p>しかし、そんな危機に際し、古くから日本の地で豊かな肉体を育んできたある男たちが立ち上がった！<br>
+                彼らこそ、日々鍛錬を積み、肉体を極めた相撲の道に生きる力士たち。<br>
+                日本の国技に宿る「ドスコイ魂」を胸に、世界の豊かさと平和を取り戻すため、五人の力士が今、正義のヒーロー「お相撲戦隊ドスコイジャー」として土俵に上がる！</p>
+                <p>果たして、お相撲戦隊ドスコイジャーは、飢えと豊かさの戦いに終止符を打ち、地球に再び満腹の平和をもたらすことができるのか！？</p>
+                <p><strong>「おしだせ！世界の平和！」</strong><br>
+                2026年春、スーパー戦隊シリーズ第〇〇１作品目。。。。になるわけない。。</p>
+
                 <div style="margin-top: 20px;">
                      <button class="disco-modal-play" onclick="openVideoModal('${getSafeUrl('assets/series/dosukoi-jah/20251230_1927_01kdjsqxy7f3y90qhr8jx4p7b1.mp4')}')">
                            <i data-lucide="video"></i> 🎥 Movie を観る
@@ -198,11 +217,23 @@ function renderSeries() {
                 </div>
             </div>
         </div>
-        <div class="glass-panel" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
+        
+        <div class="glass-panel" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; margin-top: 40px;">
             <img src="assets/series/luna/dbaa391d-4114-4fdc-b3e1-a32f2304d253.png" style="width: 100%; max-width: 300px; border-radius: 12px; object-fit: contain; background: #000;" alt="ルナ">
-            <div style="flex: 1; min-width: 250px;">
+            <div style="flex: 1; min-width: 250px;" class="text-block">
                 <h3 style="color: var(--pastel-purple); margin-bottom: 1rem;">断腕の継承者ルナ</h3>
-                <p>遠い未来、地球は宇宙の敵と戦争していました。最強の人型兵器Akumaの右腕を装備して戦う運命を背負った少女の物語。</p>
+                <p><strong>■ 断腕の継承者ルナ</strong></p>
+                <p>遠い未来、地球は宇宙の敵と戦争していました。<br>
+                地球を襲った最強の人型兵器Akuma。<br>
+                地球人はその右腕を断ち切ることに成功して追い払うことはできました。<br>
+                しかし地球は戦争で荒廃しています。<br>
+                戦争中に右腕を失ったルナ。<br>
+                ルナの父は研究員でAkumaの落とした右腕を、人間に装備して戦う事が出来ないか軍事研究をしていました。<br>
+                Akumaの右腕の適合者は、人類にただ1人。<br>
+                娘のルナだけでした。頭を抱える父。<br>
+                戦わなければ人類は滅びてしまう。<br>
+                ルナは逃げたい気持ちを押し殺して、戦う事を決めました。</p>
+
                 <div style="margin-top: 20px;">
                      <button class="disco-modal-play" onclick="openVideoModal('${getSafeUrl('assets/series/luna/変形ガード.mp4')}')">
                            <i data-lucide="video"></i> 🎥 Movie を観る
