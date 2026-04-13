@@ -1,6 +1,6 @@
-// Globals
 let musicData = [];
 let artData = [];
+let characterData = [];
 
 // DOM Elements
 const appRoot = document.getElementById('app-root');
@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const aRes = await fetch('assets/art_data.json');
         artData = await aRes.json();
     } catch(e) { console.warn('Art data not found', e); }
+    
+    try {
+        const cRes = await fetch('assets/character_data.json');
+        characterData = await cRes.json();
+    } catch(e) { console.warn('Character data not found', e); }
     
     // Setup Navigation
     navLinks.forEach(link => {
@@ -151,12 +156,36 @@ function renderMusic() {
         `;
     }).join('');
 
+    const defaultCharSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a25"/><circle cx="100" cy="100" r="40" fill="#c8a2c8" opacity="0.8"/><circle cx="100" cy="100" r="20" fill="#c8a2c8"/></svg>';
+    const defaultCharImage = 'data:image/svg+xml,' + encodeURIComponent(defaultCharSvg);
+
+    let charHtml = characterData.map(char => {
+        const bg = char.image ? getSafeUrl(char.image) : defaultCharImage;
+        const descriptionHtml = char.description.replace(/\n/g, '<br>');
+        return `
+            <div class="glass-panel text-block" style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap;">
+                <img src="${bg}" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--pastel-purple);" alt="${char.name}">
+                <div style="flex: 1; min-width: 200px;">
+                    <h3 style="color: var(--pastel-purple); margin-bottom: 0.5rem; font-size: 1.5rem;">${char.name}</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">${descriptionHtml}</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+
     return `
-        <h2 class="page-title">Discography</h2>
+        <h2 class="page-title">Music</h2>
+        
+        <h3 class="page-title" style="font-size: 1.8rem; margin-top: 2rem; color: var(--neon-blue);">Discography</h3>
         <div class="glass-panel">
             <div class="disco-grid">
                 ${tiles}
             </div>
+        </div>
+
+        <h3 class="page-title" style="font-size: 1.8rem; margin-top: 4rem; color: var(--pastel-purple);">Characters</h3>
+        <div class="characters-list">
+            ${charHtml}
         </div>
     `;
 }
