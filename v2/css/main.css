@@ -84,6 +84,7 @@ a:hover { color: var(--pastel-purple); text-shadow: 0 0 10px var(--pastel-purple
     display: none; flex-direction: column; background: rgba(10,10,15,0.95);
     position: absolute; top: 70px; left: 0; width: 100%; padding: 20px;
     backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-glass);
+    z-index: 1000;
 }
 .mobile-nav.active { display: flex; gap: 15px; }
 
@@ -185,6 +186,58 @@ audio { width: 100%; max-width: 600px; border-radius: 30px; height: 45px; }
     position: absolute; top: 20px; right: 30px;
     background: none; border: none; color: white; cursor: pointer;
     width: 40px; height: 40px;
+}
+
+/* Disco Modal */
+.disco-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(10px);
+    z-index: 3000; display: none; justify-content: center; align-items: center;
+    padding: 20px;
+}
+.disco-modal.active { display: flex; animation: fadeIn 0.3s; }
+.disco-modal-content {
+    background: var(--bg-surface); border: 1px solid var(--border-glass);
+    border-radius: 20px; padding: 2rem; max-width: 800px; width: 100%;
+    display: flex; gap: 30px; position: relative;
+    box-shadow: 0 10px 40px rgba(0,243,255,0.2);
+}
+.disco-modal-img {
+    width: 300px; height: 300px; object-fit: cover; border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+.disco-modal-info { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 15px; }
+.disco-modal-title { font-size: 2rem; color: var(--neon-blue); line-height: 1.2; word-break: break-all; }
+.disco-modal-date { color: var(--pastel-purple); font-weight: 600; font-size: 1.1rem; }
+.disco-modal-suno { 
+    display: inline-flex; align-items: center; gap: 10px; color: #fff;
+    background: #333; padding: 10px 20px; border-radius: 30px; align-self: flex-start;
+    font-weight: bold; transition: 0.3s;
+}
+.disco-modal-suno:hover { background: var(--neon-blue); color: #000; }
+.disco-modal-suno img { height: 24px; }
+.disco-modal-play {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(90deg, var(--neon-blue), var(--pastel-purple));
+    color: white; border: none; padding: 12px 30px; border-radius: 30px;
+    font-size: 1.1rem; font-weight: bold; cursor: pointer; align-self: flex-start;
+    box-shadow: 0 5px 15px var(--neon-blue-glow); transition: 0.3s;
+}
+.disco-modal-play:hover { transform: scale(1.05); }
+
+.disco-modal-close {
+    position: absolute; top: 15px; right: 15px; background: none; border: none;
+    color: white; cursor: pointer; width: 40px; height: 40px;
+    display: flex; justify-content: center; align-items: center; border-radius: 50%;
+    transition: 0.3s; background: rgba(255,255,255,0.1);
+}
+.disco-modal-close:hover { background: rgba(255,255,255,0.3); }
+
+@media (max-width: 768px) {
+    .disco-modal-content { flex-direction: column; align-items: center; text-align: center; padding: 1.5rem; }
+    .disco-modal-info { align-items: center; }
+    .disco-modal-suno, .disco-modal-play { align-self: center; }
+    .disco-modal-img { width: 100%; max-width: 300px; height: auto; aspect-ratio: 1/1; }
 }
 
 /* Generic Grids */

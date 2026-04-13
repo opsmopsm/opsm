@@ -68,13 +68,25 @@ if os.path.exists(discography_dir):
                     audio_file = f"assets/music/discography/{folder}/{file}"
                 elif ext in valid_exts and not image_file:
                     image_file = f"assets/music/discography/{folder}/{file}"
+                elif ext == '.url':
+                    try:
+                        with open(file_path, 'r', encoding='utf-8', errors='ignore') as url_f:
+                            for line in url_f:
+                                if line.startswith('URL='):
+                                    suno_url = line.strip().split('=', 1)[1]
+                                    break
+                    except Exception:
+                        pass
             
             if audio_file:
-                music_list.append({
+                entry = {
                     "title": title,
                     "imageFile": image_file,
                     "audioFile": audio_file
-                })
+                }
+                if suno_url:
+                    entry["sunoUrl"] = suno_url
+                music_list.append(entry)
 
 # Sort by folder name (which starts with date)
 music_list.sort(key=lambda x: x["title"])

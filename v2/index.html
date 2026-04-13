@@ -82,5 +82,25 @@
         <img class="lightbox-content" id="lightbox-img" alt="Gallery">
     </div>
 
+    <!-- Discography Modal -->
+    <div id="disco-modal" class="disco-modal">
+        <div class="disco-modal-content">
+            <button class="disco-modal-close" onclick="closeDiscoModal()"><i data-lucide="x"></i></button>
+            <img id="disco-modal-img" class="disco-modal-img" src="" alt="Cover Art">
+            <div class="disco-modal-info">
+                <h3 id="disco-modal-title" class="disco-modal-title">Track Title</h3>
+                <div id="disco-modal-date" class="disco-modal-date">Release Date</div>
+                <div style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+                    <button id="disco-modal-play" class="disco-modal-play">
+                        <i data-lucide="play-circle"></i> ▶ PLAY
+                    </button>
+                    <a id="disco-modal-suno" class="disco-modal-suno" href="#" target="_blank" style="display: none;">
+                        <img src="assets/links/SUNO/Suno.png" alt="Suno" style="height: 20px;"> Listen on Suno
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

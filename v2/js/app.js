@@ -120,13 +120,16 @@ function renderAbout() {
 }
 
 function renderMusic() {
+    const defaultImageSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a25"/><circle cx="100" cy="100" r="40" fill="#00f3ff" opacity="0.3"/><circle cx="100" cy="100" r="20" fill="#00f3ff"/></svg>';
+    const defaultImage = 'data:image/svg+xml,' + encodeURIComponent(defaultImageSvg);
+
     let tiles = musicData.slice().reverse().map((track, i) => {
         const title = track.title.replace(/^[0-9]+_/, '');
-        const bg = track.imageFile ? track.imageFile : '';
+        const bg = track.imageFile ? track.imageFile : defaultImage;
         return `
             <div class="disco-tile" data-index="${i}" style="background-image: url('${encodeURI(bg)}')">
                 <div class="play-overlay">
-                    <i data-lucide="play-circle"></i>
+                    <i data-lucide="info"></i>
                 </div>
             </div>
         `;
@@ -163,8 +166,10 @@ function renderMovie() {
         <div class="glass-panel">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
                 <iframe width="100%" height="250" src="https://www.youtube.com/embed/XjL1bWc2ZJs" title="YouTube" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
+                <iframe width="100%" height="250" src="https://www.youtube.com/embed/FsdgQFUMuzI" title="YouTube" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
                 <iframe width="100%" height="250" src="https://www.youtube.com/embed/hBLeWna3n-Y" title="YouTube" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
                 <iframe width="100%" height="250" src="https://www.youtube.com/embed/5K8a4vcYMlM" title="YouTube" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
+                <iframe width="100%" height="250" src="https://www.youtube.com/embed/QJFaJUD4qA8" title="YouTube" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
             </div>
         </div>
     `;
@@ -173,24 +178,65 @@ function renderMovie() {
 function renderSeries() {
     return `
         <h2 class="page-title">Series</h2>
-        <div class="glass-panel">
-            <h3 style="color: var(--neon-blue); margin-bottom: 1rem;">お相撲戦隊ドスコイジャー！</h3>
-            <p>遥か遠い宇宙の彼方から、突如として地球を襲った謎の宇宙人「ヒョロガリー」。彼らの目的はただ一つ、貧しい星に変えることだった...</p>
+        <div class="glass-panel" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
+            <img src="assets/series/dosukoi-jah/TOP.png" style="width: 100%; max-width: 300px; border-radius: 12px;" alt="ドスコイジャー">
+            <div style="flex: 1; min-width: 250px;">
+                <h3 style="color: var(--neon-blue); margin-bottom: 1rem;">お相撲戦隊ドスコイジャー！</h3>
+                <p>遥か遠い宇宙の彼方から、突如として地球を襲った謎の宇宙人「ヒョロガリー」。彼らの目的はただ一つ、貧しい星に変えることだった...</p>
+            </div>
         </div>
-        <div class="glass-panel">
-            <h3 style="color: var(--pastel-purple); margin-bottom: 1rem;">断腕の継承者ルナ</h3>
-            <p>遠い未来、地球は宇宙の敵と戦争していました。最強の人型兵器Akumaの右腕を装備して戦う運命を背負った少女の物語。</p>
+        <div class="glass-panel" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
+            <img src="assets/series/luna/dbaa391d-4114-4fdc-b3e1-a32f2304d253.png" style="width: 100%; max-width: 300px; border-radius: 12px; object-fit: contain; background: #000;" alt="ルナ">
+            <div style="flex: 1; min-width: 250px;">
+                <h3 style="color: var(--pastel-purple); margin-bottom: 1rem;">断腕の継承者ルナ</h3>
+                <p>遠い未来、地球は宇宙の敵と戦争していました。最強の人型兵器Akumaの右腕を装備して戦う運命を背負った少女の物語。</p>
+            </div>
         </div>
     `;
 }
 
 // Events
 function attachMusicEvents() {
+    const defaultImageSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a25"/><circle cx="100" cy="100" r="40" fill="#00f3ff" opacity="0.3"/><circle cx="100" cy="100" r="20" fill="#00f3ff"/></svg>';
+    const defaultImage = 'data:image/svg+xml,' + encodeURIComponent(defaultImageSvg);
+
     document.querySelectorAll('.disco-tile').forEach(tile => {
         tile.addEventListener('click', (e) => {
             const index = Number(e.currentTarget.dataset.index);
             const track = musicData.slice().reverse()[index];
-            playGlobalTrack(track);
+            
+            // Populate Modal
+            document.getElementById('disco-modal-title').textContent = track.title.replace(/^[0-9]+_/, '');
+            
+            // Extract date from folder prefix (e.g. 260403 -> 2026/04/03)
+            const dateMatch = track.title.match(/^([0-9]{2})([0-9]{2})([0-9]{2})_/);
+            if (dateMatch) {
+                document.getElementById('disco-modal-date').textContent = `20${dateMatch[1]}/${dateMatch[2]}/${dateMatch[3]} Release`;
+            } else {
+                document.getElementById('disco-modal-date').textContent = "";
+            }
+
+            document.getElementById('disco-modal-img').src = track.imageFile ? encodeURI(track.imageFile) : defaultImage;
+            
+            const sunoLink = document.getElementById('disco-modal-suno');
+            if (track.sunoUrl) {
+                sunoLink.href = track.sunoUrl;
+                sunoLink.style.display = 'inline-flex';
+            } else {
+                sunoLink.style.display = 'none';
+            }
+
+            const playBtn = document.getElementById('disco-modal-play');
+            // Remove old event listeners by cloning
+            const newPlayBtn = playBtn.cloneNode(true);
+            playBtn.parentNode.replaceChild(newPlayBtn, playBtn);
+            
+            newPlayBtn.addEventListener('click', () => {
+                playGlobalTrack(track);
+                closeDiscoModal();
+            });
+
+            document.getElementById('disco-modal').classList.add('active');
         });
     });
 }
@@ -216,9 +262,12 @@ function attachArtEvents() {
 
 // Global Player
 window.playGlobalTrack = function(track) {
+    const defaultImageSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a25"/><circle cx="100" cy="100" r="40" fill="#00f3ff" opacity="0.3"/><circle cx="100" cy="100" r="20" fill="#00f3ff"/></svg>';
+    const defaultImage = 'data:image/svg+xml,' + encodeURIComponent(defaultImageSvg);
+
     const title = track.title.replace(/^[0-9]+_/, '');
     playerTitle.textContent = title;
-    playerThumb.src = track.imageFile ? encodeURI(track.imageFile) : '';
+    playerThumb.src = track.imageFile ? encodeURI(track.imageFile) : defaultImage;
     mainAudio.src = encodeURI(track.audioFile);
     mainAudio.play();
     globalPlayer.classList.remove('hidden');
@@ -229,3 +278,8 @@ window.closePlayer = function() {
     mainAudio.pause();
     globalPlayer.classList.remove('active');
 }
+
+window.closeDiscoModal = function() {
+    document.getElementById('disco-modal').classList.remove('active');
+}
+
