@@ -119,15 +119,20 @@ function renderAbout() {
     `;
 }
 
+function getSafeUrl(path) {
+    if (!path) return '';
+    return path.split('/').map(encodeURIComponent).join('/');
+}
+
 function renderMusic() {
-    const defaultImageSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a25"/><circle cx="100" cy="100" r="40" fill="#00f3ff" opacity="0.3"/><circle cx="100" cy="100" r="20" fill="#00f3ff"/></svg>';
+    const defaultImageSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a25"/><circle cx="100" cy="100" r="40" fill="#00f3ff" opacity="0.8"/><circle cx="100" cy="100" r="20" fill="#c8a2c8"/></svg>';
     const defaultImage = 'data:image/svg+xml,' + encodeURIComponent(defaultImageSvg);
 
     let tiles = musicData.slice().reverse().map((track, i) => {
         const title = track.title.replace(/^[0-9]+_/, '');
-        const bg = track.imageFile ? track.imageFile : defaultImage;
+        const bg = track.imageFile ? getSafeUrl(track.imageFile) : defaultImage;
         return `
-            <div class="disco-tile" data-index="${i}" style="background-image: url('${encodeURI(bg)}')">
+            <div class="disco-tile" data-index="${i}" style="background-image: url('${bg}')">
                 <div class="play-overlay">
                     <i data-lucide="info"></i>
                 </div>
@@ -147,7 +152,7 @@ function renderMusic() {
 
 function renderArt() {
     let images = artData.map(src => {
-        return `<img src="${encodeURI(src)}" class="gallery-img" alt="Artwork">`;
+        return `<img src="${getSafeUrl(src)}" class="gallery-img" alt="Artwork">`;
     }).join('');
 
     return `
@@ -216,7 +221,7 @@ function attachMusicEvents() {
                 document.getElementById('disco-modal-date').textContent = "";
             }
 
-            document.getElementById('disco-modal-img').src = track.imageFile ? encodeURI(track.imageFile) : defaultImage;
+            document.getElementById('disco-modal-img').src = track.imageFile ? getSafeUrl(track.imageFile) : defaultImage;
             
             const sunoLink = document.getElementById('disco-modal-suno');
             if (track.sunoUrl) {
@@ -267,8 +272,8 @@ window.playGlobalTrack = function(track) {
 
     const title = track.title.replace(/^[0-9]+_/, '');
     playerTitle.textContent = title;
-    playerThumb.src = track.imageFile ? encodeURI(track.imageFile) : defaultImage;
-    mainAudio.src = encodeURI(track.audioFile);
+    playerThumb.src = track.imageFile ? getSafeUrl(track.imageFile) : defaultImage;
+    mainAudio.src = getSafeUrl(track.audioFile);
     mainAudio.play();
     globalPlayer.classList.remove('hidden');
     globalPlayer.classList.add('active');
