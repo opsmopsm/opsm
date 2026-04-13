@@ -102,7 +102,7 @@
                 
                 <div class="subsection">
                     <h3 class="subsection-title">Discography</h3>
-                    <div id="discography-grid" class="cards-grid">
+                    <div id="discography-grid" class="disco-grid">
                         <!-- Tracks will be dynamically injected here using main.js -->
                     </div>
                 </div>
@@ -284,7 +284,18 @@
         </section>
     </main>
 
-    <footer class="footer">
+    <!-- Global Player -->
+    <div id="global-player" class="global-player">
+        <div class="player-info">
+            <img id="player-thumb" src="" alt="">
+            <div class="player-text">
+                <h4 id="player-title">Select a track</h4>
+            </div>
+        </div>
+        <audio id="main-audio" controls controlsList="nodownload"></audio>
+    </div>
+
+    <footer class="footer" style="padding-bottom: 90px;">
         <div class="container">
             <p>&copy; 2026 OPSM's AI Creative Base. All rights reserved.</p>
         </div>

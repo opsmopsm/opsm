@@ -55,6 +55,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load Discography Data
     const discoGrid = document.getElementById('discography-grid');
+    const globalPlayer = document.getElementById('global-player');
+    const mainAudio = document.getElementById('main-audio');
+    const playerThumb = document.getElementById('player-thumb');
+    const playerTitle = document.getElementById('player-title');
+
+    window.playGlobalTrack = function(audioSrc, title, thumbSrc) {
+        if (!globalPlayer) return;
+        playerThumb.src = thumbSrc;
+        playerTitle.textContent = title;
+        mainAudio.src = audioSrc;
+        mainAudio.play();
+        globalPlayer.classList.add('active');
+        
+        // Pause all other possible audios just in case
+        document.querySelectorAll('audio').forEach(other => {
+            if (other !== mainAudio) other.pause();
+        });
+    };
+
     if (discoGrid) {
         fetch('assets/music_data.json')
             .then(res => res.json())
@@ -62,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Reverse to show newest first
                 data.reverse().forEach(track => {
                     const card = document.createElement('div');
-                    card.className = 'card audio-card';
+                    card.className = 'disco-tile';
                     
                     const cleanedTitle = track.title.replace(/^[0-9]+_/, ''); // Remove date prefix
 
@@ -74,31 +93,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     const encodedImage = encodePath(track.imageFile);
                     const encodedAudio = encodePath(track.audioFile);
 
-                    const bgImage = encodedImage ? `url('${encodedImage}')` : `url('${defaultImage}')`;
+                    const bgImage = encodedImage ? encodedImage : defaultImage;
 
-                    const sunoLinkHtml = track.sunoUrl ? `<a href="${track.sunoUrl}" target="_blank" rel="noopener noreferrer" class="suno-link-icon" title="Listen on Suno"><img src="assets/links/SUNO/Suno.png" alt="Suno"></a>` : '';
-
+                    card.style.backgroundImage = `url('${bgImage}')`;
+                    
                     card.innerHTML = `
-                        <div class="card-image bg-blue" style="background-image: ${bgImage}; background-size: cover; background-position: center; position: relative;">
-                            ${sunoLinkHtml}
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem; word-break: break-all;">${cleanedTitle}</h3>
-                            <audio controls controlsList="nodownload" oncontextmenu="return false;" preload="none" style="width: 100%;">
-                                <source src="${encodedAudio}">
-                                Your browser does not support the audio element.
-                            </audio>
-                        </div>
+                        <div class="play-overlay"></div>
                     `;
-                    discoGrid.appendChild(card);
 
-                    // Single play logic
-                    const audioEl = card.querySelector('audio');
-                    audioEl.addEventListener('play', function() {
-                        document.querySelectorAll('audio').forEach(other => {
-                            if (other !== this) other.pause();
-                        });
+                    card.addEventListener('click', () => {
+                        window.playGlobalTrack(encodedAudio, cleanedTitle, bgImage);
                     });
+
+                    discoGrid.appendChild(card);
                 });
             })
             .catch(err => {
