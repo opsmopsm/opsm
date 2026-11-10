@@ -30,13 +30,23 @@ nav.main{display:flex;gap:4px;margin-left:auto;flex-wrap:nowrap}
 nav.main a{text-decoration:none;font-weight:700;font-size:14px;padding:8px 12px;border-radius:999px;white-space:nowrap;transition:background .2s}
 nav.main a:hover{background:rgba(255,255,255,.08)}
 nav.main a.on{background:var(--lamp);color:#2a1d0c}
-.hbtn{display:none;margin-left:auto;padding:6px}
-.drawer{position:fixed;inset:0;z-index:90;background:rgba(10,24,17,.97);padding:70px 28px 28px;display:none;flex-direction:column;gap:4px;overflow:auto}
-.drawer.open{display:flex}
+.hbtn{display:none;margin-left:auto;width:44px;height:44px;position:relative;border-radius:50%;transition:background .2s,scale .15s}
+.hbtn:hover{background:rgba(255,255,255,.08)}
+.hbtn i{position:absolute;left:11px;right:11px;height:2.6px;border-radius:2px;background:currentColor;transition:transform .35s cubic-bezier(.5,1.6,.5,1),opacity .2s}
+.hbtn i:nth-child(1){top:14px}.hbtn i:nth-child(2){top:21px}.hbtn i:nth-child(3){top:28px}
+.hbtn[aria-expanded="true"] i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hbtn[aria-expanded="true"] i:nth-child(2){opacity:0;transform:scaleX(0)}
+.hbtn[aria-expanded="true"] i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.drawer{position:fixed;inset:0;z-index:90;background:rgba(10,24,17,.985);padding:84px 28px 28px;display:flex;flex-direction:column;gap:4px;overflow:auto;visibility:hidden;opacity:0;clip-path:circle(0 at calc(100% - 40px) 33px);transition:clip-path .5s cubic-bezier(.7,0,.3,1),opacity .3s,visibility 0s .5s}
+.drawer.open{visibility:visible;opacity:1;clip-path:circle(150% at calc(100% - 40px) 33px);transition:clip-path .55s cubic-bezier(.7,0,.3,1),opacity .2s,visibility 0s}
 .drawer a{text-decoration:none;font-size:22px;font-weight:900;padding:10px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline}
 .drawer a small{font-size:12px;color:var(--mu);font-weight:500}
 .drawer .x{position:absolute;top:18px;right:22px;font-weight:700}
+html.menu-open header.top{z-index:91;background:transparent;border-color:transparent;backdrop-filter:none}
+html.menu-open .drawer .x{display:none}
+html.menu-open body{overflow:hidden}
 @media (max-width:1000px){ nav.main{display:none} .hbtn{display:block} }
+@media (min-width:1001px){ .drawer{display:none} }
 
 /* ---------- buttons, chips ---------- */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:999px;border:2px solid var(--line);text-decoration:none;font-weight:700;font-size:14px;background:rgba(255,255,255,.04);transition:transform .15s,background .2s}
@@ -188,7 +198,7 @@ main{min-height:70vh;padding-bottom:80px}
 .sd .meta{display:flex;flex-wrap:wrap;gap:6px 22px;color:var(--mu);font-size:14px}
 .sd .meta b{color:var(--tx)}
 .pline{display:flex;align-items:center;gap:12px;margin-top:20px;font-weight:700}
-.pline .play{position:static;width:56px;height:56px}
+.pline .play{position:relative;right:auto;bottom:auto;width:56px;height:56px}
 .pline .play svg{width:26px;height:26px}
 .note{background:var(--card);border-left:4px solid var(--leaf);padding:14px 18px;border-radius:0 12px 12px 0;margin:18px 0;color:#dbe7d3}
 .ly{margin-top:24px;background:var(--card);border-radius:var(--r);padding:16px 22px}
@@ -282,8 +292,10 @@ a.game:hover{transform:translateY(-5px)}
 .ccard b{display:block;font-weight:900;line-height:1.35}
 .ccard small{font-size:12px;color:var(--mu);line-height:1.4;display:block}
 .ccard .dot{position:absolute;top:10px;right:10px;width:12px;height:12px;border-radius:50%;border:2px solid #fff}
-.modal{position:fixed;inset:0;z-index:95;background:rgba(5,12,8,.8);display:none;align-items:center;justify-content:center;padding:20px}
-.modal.open{display:flex}
+.modal{position:fixed;inset:0;z-index:95;background:rgba(5,12,8,.8);display:flex;align-items:center;justify-content:center;padding:20px;visibility:hidden;opacity:0;transition:opacity .25s,visibility 0s .25s}
+.modal.open{visibility:visible;opacity:1;transition:opacity .25s,visibility 0s}
+.modal .box{transform:translateY(24px) scale(.94);transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.modal.open .box{transform:none}
 .modal .box{background:var(--bg2);border-radius:22px;overflow:hidden;max-width:860px;width:100%;max-height:90vh;display:grid;grid-template-columns:1fr 1.1fr;box-shadow:0 30px 80px rgba(0,0,0,.5)}
 @media (max-width:700px){ .modal .box{grid-template-columns:1fr;overflow:auto} }
 .modal .pic img{width:100%;height:100%;object-fit:cover;max-height:90vh}
@@ -351,9 +363,12 @@ footer small{color:var(--mu);font-size:12px}
 .player .ctl button svg{width:20px;height:20px}
 .player .ctl .pp{background:var(--lamp);color:#2a1d0c;width:44px;height:44px}
 @media (max-width:560px){ .player .suno{display:none} }
-.lightbox{position:fixed;inset:0;z-index:96;background:rgba(3,8,5,.94);display:none;align-items:center;justify-content:center}
-.lightbox.open{display:flex}
-.lightbox img{max-width:92vw;max-height:84vh;border-radius:10px}
+.lightbox{position:fixed;inset:0;z-index:96;background:rgba(3,8,5,.94);display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:opacity .25s,visibility 0s .25s}
+.lightbox.open{visibility:visible;opacity:1;transition:opacity .25s,visibility 0s}
+.lightbox img{max-width:92vw;max-height:84vh;border-radius:10px;transform:scale(.9);transition:transform .4s cubic-bezier(.3,1.3,.5,1),opacity .2s}
+.lightbox.open img{transform:none}
+.lightbox img.swap{opacity:0;transform:scale(.97)}
+.lightbox .nav{transition:scale .15s,color .2s}.lightbox .nav:hover{color:var(--lamp)}
 .lightbox .cap{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:#ddd;font-size:14px}
 .lightbox .close{position:absolute;top:16px;right:20px;font-weight:700}
 .lightbox .nav{position:absolute;top:50%;transform:translateY(-50%);font-size:48px;padding:10px 18px;color:#fff}
@@ -437,4 +452,96 @@ html.intro-on #intro{display:block}
   .mm,.bubble{left:30%;top:76%}
   .wall .hole{width:24%;height:26%}
 }
-@media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} }
+
+
+/* =========================================================
+   ちょっとした動き（マイクロインタラクション）
+   ========================================================= */
+/* キーボード操作のときだけ見える、ランプ色のフォーカス枠 */
+:focus-visible{outline:3px solid var(--lamp);outline-offset:3px;border-radius:10px}
+:focus:not(:focus-visible){outline:none}
+
+/* 押したとき：ぷにっと沈む（transformとは別の scale を使うので既存の動きとぶつからない） */
+.btn,.chip-b,.play,nav.main a,.player .ctl button,.tabs a,.skip,.linkish,.pgrid button,.lightbox .nav,.links a,.room,.ccard,.game,.pick{transition-property:transform,background,border-color,color,scale,box-shadow;transition-duration:.2s,.2s,.2s,.2s,.12s,.2s}
+.btn:active,.chip-b:active,.play:active,nav.main a:active,.player .ctl button:active,.tabs a:active,.skip:active,.hbtn:active,.pgrid button:active,.lightbox .nav:active{scale:.93}
+.room:active,.ccard:active,.game:active,.pick:active,.links a:active{scale:.98}
+
+/* 押した場所から広がる光の輪（JSで .rp を追加） */
+.btn,.chip-b,nav.main a,.player .ctl button,.tabs a,.drawer a,.pick,.links a{position:relative;overflow:hidden}
+.rp{position:absolute;border-radius:50%;pointer-events:none;width:12px;height:12px;margin:-6px 0 0 -6px;background:radial-gradient(circle,rgba(255,236,160,.55),rgba(255,236,160,0) 70%);animation:rp .6s ease-out forwards}
+.btn.lamp .rp,.chip-b.on .rp,.play .rp,nav.main a.on .rp{background:radial-gradient(circle,rgba(255,255,255,.75),rgba(255,255,255,0) 70%)}
+@keyframes rp{to{transform:scale(var(--s,30));opacity:0}}
+
+/* ボタン：矢印がちょっと前へ、ランプボタンはほんのり光る */
+.btn.lamp{box-shadow:0 0 0 rgba(255,207,107,0)}
+.btn.lamp:hover{box-shadow:0 6px 22px rgba(255,207,107,.35)}
+.shead .more{display:inline-block;transition:transform .2s}
+.shead .more:hover{transform:translateX(5px)}
+.chip-b{transition-property:background,border-color,color,scale}
+.chip-b:hover{border-color:rgba(124,207,92,.6)}
+.chip-b.on{animation:chipPop .35s cubic-bezier(.3,1.8,.5,1)}
+@keyframes chipPop{0%{scale:.85}100%{scale:1}}
+
+/* ヘッダーのメニュー：ランプ色の札がスッと移動する */
+nav.main{position:relative}
+nav.main a{position:relative;z-index:1;transition:color .25s,background .2s,scale .12s}
+nav.main a.on{background:transparent}
+nav.main .ind{position:absolute;z-index:0;top:0;left:0;height:100%;width:0;border-radius:999px;background:var(--lamp);opacity:0;pointer-events:none;box-shadow:0 0 18px rgba(255,207,107,.35);transition:transform .45s cubic-bezier(.4,1.4,.5,1),width .45s cubic-bezier(.4,1.4,.5,1),opacity .25s}
+nav.main .ind.show{opacity:1}
+nav.main.no-anim .ind{transition:none}
+header.top{transition:box-shadow .3s,background .3s}
+header.top.scrolled{box-shadow:0 8px 24px rgba(0,0,0,.35)}
+
+/* スマホのメニュー：項目が順番にすべりこむ */
+.drawer a{opacity:0;transform:translateX(30px);transition:opacity .3s,transform .4s cubic-bezier(.3,1.3,.5,1),color .2s,padding .2s}
+.drawer.open a{opacity:1;transform:none;transition-delay:calc(.12s + var(--i,0) * .04s),calc(.12s + var(--i,0) * .04s),0s,0s}
+.drawer a:hover{color:var(--lamp);padding-left:8px}
+
+/* ページ切り替え：ふわっと持ち上がる */
+#app.pg-in>*:not(.hero){animation:pgIn .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* スクロールで順番に出てくるカード（JSで .rv → .in） */
+.rv{opacity:0;transform:translateY(22px) scale(.98);transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1),scale .12s;transition-delay:calc(var(--rd,0) * 55ms)}
+.rv.in{opacity:1;transform:none}
+
+/* 部屋の木の看板：ホバーでゆらっと揺れる */
+.room .sign{transform-origin:50% -14px}
+.room:hover .sign{animation:swing .9s ease-in-out}
+@keyframes swing{0%,100%{transform:rotate(0)}20%{transform:rotate(3.5deg)}45%{transform:rotate(-2.5deg)}70%{transform:rotate(1.2deg)}}
+.links a span{transition:color .2s}
+.links a:hover span{color:var(--tx)}
+.pick:hover img{scale:1.05}
+.pick img{transition:scale .3s}
+
+/* 再生ボタン：再生中は光の輪がふくらむ */
+.play.on::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--leaf);animation:ring 1.4s ease-out infinite;pointer-events:none}
+@keyframes ring{from{transform:scale(1);opacity:.9}to{transform:scale(1.7);opacity:0}}
+.play svg{transition:transform .25s cubic-bezier(.3,1.8,.5,1)}
+.play:hover svg{transform:scale(1.1)}
+
+/* プレイヤー：ぽよんと出てきて、再生中はイコライザーが踊る */
+.player{transition:transform .5s cubic-bezier(.3,1.35,.5,1)}
+.player:not(.show){transition:transform .3s ease-in,visibility 0s .3s}
+.player .prog i{transition:width .25s linear}
+.player .ctl .pp{transition:scale .12s,box-shadow .2s}
+.player .ctl .pp:hover{box-shadow:0 0 0 6px rgba(255,207,107,.18)}
+.player .ctl button:not(.pp):hover{background:rgba(255,255,255,.1)}
+.eq{display:flex;align-items:flex-end;gap:2px;width:14px;height:14px;flex:none;opacity:.35}
+.eq i{flex:1;background:var(--leaf);height:30%;border-radius:1px}
+.player.playing .eq{opacity:1}
+.player.playing .eq i{animation:eq .8s ease-in-out infinite alternate}
+.player.playing .eq i:nth-child(2){animation-delay:-.3s;animation-duration:.6s}
+.player.playing .eq i:nth-child(3){animation-delay:-.55s;animation-duration:.9s}
+@keyframes eq{from{height:20%}to{height:100%}}
+
+/* フッターのモモンガ：さわるとぴょんと跳ねる */
+footer .fmm{cursor:pointer;transition:transform .3s}
+footer .fmm:hover{animation:hop .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px) rotate(-4deg)}70%{transform:translateY(0) rotate(2deg)}}
+
+/* 動きをへらす設定の人には、動きをすべて止める */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .rv{opacity:1;transform:none}
+}

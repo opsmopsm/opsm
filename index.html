@@ -49,9 +49,9 @@
       <span class="mk">OPS<i>M</i></span><span class="sub">森の秘密基地</span>
     </a>
     <nav class="main" id="nav">
-      <a href="#music">AI音楽</a><a href="#image">AI画像</a><a href="#video">AI動画</a><a href="#game">AIゲーム</a><a href="#series">シリーズ</a><a href="#chara">キャラクター</a><a href="#opsm">OPSM</a><a href="#links">リンク</a>
+      <a href="#music">AI音楽</a><a href="#image">AI画像</a><a href="#video">AI動画</a><a href="#game">AIゲーム</a><a href="#series">シリーズ</a><a href="#chara">キャラクター</a><a href="#opsm">OPSM</a><a href="#links">リンク</a><span class="ind" aria-hidden="true"></span>
     </nav>
-    <button class="hbtn" id="hbtn" type="button" aria-label="メニューを開く"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg></button>
+    <button class="hbtn" id="hbtn" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="drawer"><i></i><i></i><i></i></button>
   </div>
 </header>
 <div class="drawer" id="drawer" role="dialog" aria-label="メニュー">
@@ -84,7 +84,7 @@
   <div class="prog" id="pprog"><i></i></div>
   <div class="in">
     <img id="pimg" alt="">
-    <div class="ti"><b id="ptitle"></b><small id="psub">試聴 30秒</small></div>
+    <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><div class="ti"><b id="ptitle"></b><small id="psub">試聴 30秒</small></div>
     <a class="suno" id="psuno" href="#" target="_blank" rel="noopener">Sunoでフル再生 ↗</a>
     <div class="ctl">
       <button type="button" id="pprev" aria-label="前の曲"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>

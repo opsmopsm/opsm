@@ -166,6 +166,7 @@ let cur = null;
 function setPP(){
   const playing = cur && !audio.paused;
   $('#ppp').innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+  $('#player').classList.toggle('playing', !!playing);
   $$('[data-play]').forEach(b => { const on = playing && b.dataset.play === cur.id; b.classList.toggle('on', on); b.innerHTML = on ? ICON_PAUSE : ICON_PLAY; });
 }
 function play(id){
@@ -189,7 +190,7 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-play
 
 /* ライトボックス */
 let lbList = [], lbI = 0;
-function lbShow(i){ lbI = (i + lbList.length) % lbList.length; const g = lbList[lbI]; $('#lbi').src = g.f; $('#lbi').alt = g.l || ''; $('#lbc').textContent = `${g.l || g.g}　${lbI + 1} / ${lbList.length}`; $('#lb').classList.add('open'); }
+function lbShow(i){ lbI = (i + lbList.length) % lbList.length; const g = lbList[lbI]; const im = $('#lbi'); if ($('#lb').classList.contains('open') && !REDUCE){ im.classList.add('swap'); im.onload = () => im.classList.toggle('swap', false); } im.src = g.f; $('#lbi').alt = g.l || ''; $('#lbc').textContent = `${g.l || g.g}　${lbI + 1} / ${lbList.length}`; $('#lb').classList.add('open'); }
 $('#lbx').onclick = () => $('#lb').classList.remove('open');
 $('#lbp').onclick = () => lbShow(lbI - 1); $('#lbn').onclick = () => lbShow(lbI + 1);
 $('#lb').addEventListener('click', e => { if (e.target.id === 'lb') $('#lb').classList.remove('open'); });
@@ -208,12 +209,64 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-mclose]') || e.target.id === 'modal') $('#modal').classList.remove('open');
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape'){ $('#modal').classList.remove('open'); $('#lb').classList.remove('open'); $('#drawer').classList.remove('open'); if (document.documentElement.classList.contains('intro-on')) endIntro(); }
+  if (e.key === 'Escape'){ $('#modal').classList.remove('open'); $('#lb').classList.remove('open'); setMenu(false); if (document.documentElement.classList.contains('intro-on')) endIntro(); }
   if ($('#lb').classList.contains('open')){ if (e.key === 'ArrowLeft') lbShow(lbI - 1); if (e.key === 'ArrowRight') lbShow(lbI + 1); }
 });
-$('#hbtn').onclick = () => $('#drawer').classList.add('open');
-$('#dclose').onclick = () => $('#drawer').classList.remove('open');
-$$('#drawer a').forEach(a => a.addEventListener('click', () => $('#drawer').classList.remove('open')));
+function setMenu(open){
+  $('#drawer').classList.toggle('open', open);
+  document.documentElement.classList.toggle('menu-open', open);
+  const b = $('#hbtn'); b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+}
+$('#hbtn').onclick = () => setMenu(!$('#drawer').classList.contains('open'));
+$('#dclose').onclick = () => setMenu(false);
+$$('#drawer a').forEach((a, i) => { a.style.setProperty('--i', i); a.addEventListener('click', () => setMenu(false)); });
+
+/* ---------- ちょっとした動き ---------- */
+const REDUCE = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+// 押した場所から広がる光の輪
+document.addEventListener('pointerdown', e => {
+  if (REDUCE || e.button > 0) return;
+  const el = e.target.closest('.btn,.chip-b,.play,nav.main a,.player .ctl button,.tabs a,.drawer a,.pick,.links a');
+  if (!el) return;
+  const r = el.getBoundingClientRect(), sp = document.createElement('span');
+  sp.className = 'rp';
+  sp.style.left = (e.clientX - r.left) + 'px'; sp.style.top = (e.clientY - r.top) + 'px';
+  sp.style.setProperty('--s', Math.ceil(Math.hypot(r.width, r.height) / 6) + 2);
+  sp.addEventListener('animationend', () => sp.parentNode && sp.parentNode.removeChild(sp));
+  el.appendChild(sp);
+});
+// ヘッダーのランプ札を今いるコーナーへ移動
+function moveInd(instant){
+  const nav = $('#nav'), ind = $('.ind', nav), on = $('a.on', nav);
+  if (!ind) return;
+  if (!on || !nav.offsetParent){ ind.classList.toggle('show', false); return; }
+  if (instant || !ind.classList.contains('show')) nav.classList.add('no-anim');
+  ind.style.width = on.offsetWidth + 'px'; ind.style.transform = `translateX(${on.offsetLeft}px)`;
+  ind.classList.add('show');
+  void ind.offsetWidth; nav.classList.toggle('no-anim', false);
+}
+window.addEventListener('resize', () => moveInd(true));
+// スクロールしたらヘッダーに影
+const hdr = $('header.top');
+window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', window.scrollY > 8), { passive: true });
+// カードがスクロールで順番に出てくる
+const RV_SEL = '.room,.scard,.mvc,.game,.ser,.ccard,.links a,.tl li,.pick,.stats>div,.masonry button,.projs>div,.pgrid button';
+const io = (!REDUCE && 'IntersectionObserver' in window) ? new IntersectionObserver(ents => {
+  let n = 0;
+  ents.forEach(en => {
+    if (!en.isIntersecting) return;
+    const el = en.target; io.unobserve(el);
+    const d = Math.min(n++, 8);
+    el.style.setProperty('--rd', d);
+    el.classList.add('in');
+    setTimeout(() => { el.classList.toggle('rv', false); el.classList.toggle('in', false); el.style.removeProperty('--rd'); }, 700 + d * 55);
+  });
+}, { rootMargin: '0px 0px -6% 0px' }) : null;
+function reveal(root){
+  if (!io) return;
+  $$(RV_SEL, root).forEach(el => { if (el.dataset.rv) return; el.dataset.rv = '1'; el.classList.add('rv'); io.observe(el); });
+}
+if (io) new MutationObserver(() => reveal(app)).observe(app, { childList: true, subtree: true });
 
 /* ---------- ページ ---------- */
 const GAMES = [
@@ -466,6 +519,8 @@ function route(){
   else html = viewNotFound();
   app.innerHTML = html;
   $$('#nav a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + nav));
+  moveInd();
+  app.classList.toggle('pg-in', false); void app.offsetWidth; app.classList.add('pg-in');
   if (init) init();
   setPP();
   if (!document.documentElement.classList.contains('intro-on')) window.scrollTo(0, 0);
