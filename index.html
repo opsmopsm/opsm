@@ -3,79 +3,61 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OPSMの森の秘密基地</title>
-<meta name="description" content="OPSM（おぽ）のAI創作の秘密基地。AI音楽・AI画像・AI動画・AIゲーム・シリーズ・キャラクター。">
-<meta property="og:title" content="OPSMの森の秘密基地">
-<meta property="og:description" content="モモンガについて森をぬけると、AI創作の秘密基地。">
-<meta property="og:image" content="https://opsmopsm.github.io/opsm/daijiten/h/momonga.webp">
+<title>OPSM ROULETTE｜おぽのAI創作</title>
+<meta name="description" content="OPSM（おぽ）のAI創作サイト。ルーレットを回して、AI音楽・AI画像・AI動画・AI漫画・AIゲーム・キャラクター・ストーリーへ。">
+<meta property="og:title" content="OPSM ROULETTE｜おぽのAI創作">
+<meta property="og:description" content="何が出るかは回してのお楽しみ。OPSMのAI創作ルーレット。">
+<meta property="og:image" content="https://opsmopsm.github.io/opsm/img/ogp.webp">
 <link rel="icon" href="daijiten/g/8d80b48e47.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="kichi.css">
-<script>
-  // オープニングは1セッションに1回（トップから入ったときだけ）
-  (function(){
-    var h = location.hash.replace('#','');
-    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var seen = false; try { seen = sessionStorage.getItem('opsm-intro') === '1'; } catch(e){}
-    if ((h === '' || h === 'top') && !seen && !reduce) document.documentElement.classList.add('intro-on');
-  })();
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="roulette.css">
+<script type="importmap">{"imports":{"three":"./lib/three.module.min.js"}}</script>
 </head>
-<body>
-
-<!-- ===== オープニング：モモンガについて森をぬける ===== -->
-<div id="intro" aria-hidden="true">
-  <div class="sc" id="sc">
-    <div class="sky"></div>
-    <div class="rays"></div>
-    <div class="far" id="far"></div>
-    <div class="wall" id="wall"><div class="hole"></div></div>
-    <div class="ground"></div>
-    <div class="mm" id="mm"></div>
-    <div class="bubble" id="bubble">こっちこっち！</div>
-    <div class="gasa" id="gasa">ガサッ</div>
-    <div class="burst" id="burst"></div>
-  </div>
-  <div class="rush" id="rush"></div>
-  <div class="flash"></div>
-  <button class="skip" id="skip" type="button">スキップ ▶</button>
-</div>
+<body class="is-top">
 
 <header class="top">
   <div class="wrap hbar">
-    <a class="logo" href="#top" aria-label="OPSMの森の秘密基地 トップへ">
-      <span class="mk">OPS<i>M</i></span><span class="sub">森の秘密基地</span>
-    </a>
-    <nav class="main" id="nav">
-      <a href="#music">AI音楽</a><a href="#image">AI画像</a><a href="#video">AI動画</a><a href="#game">AIゲーム</a><a href="#series">シリーズ</a><a href="#chara">キャラクター</a><a href="#opsm">OPSM</a><a href="#links">リンク</a>
-    </nav>
+    <a class="logo" href="#top" aria-label="OPSM トップへ"><span class="mk">OPS<i>M</i></span><span class="sub">ROULETTE</span></a>
+    <nav class="main" id="nav"></nav>
     <button class="hbtn" id="hbtn" type="button" aria-label="メニューを開く"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg></button>
   </div>
 </header>
 <div class="drawer" id="drawer" role="dialog" aria-label="メニュー">
   <button class="x" id="dclose" type="button">閉じる</button>
-  <a href="#top">トップ<small>TOP</small></a>
-  <a href="#music">AI音楽<small>全曲リスト・ペルソナ</small></a>
-  <a href="#image">AI画像<small>IMAGE</small></a>
-  <a href="#video">AI動画<small>VIDEO</small></a>
-  <a href="#game">AIゲーム<small>GAME</small></a>
-  <a href="#series">シリーズ<small>SERIES</small></a>
-  <a href="#chara">キャラクター<small>CHARACTER</small></a>
-  <a href="#opsm">OPSM<small>自己紹介・沿革</small></a>
-  <a href="#links">リンク<small>LINKS</small></a>
+  <div id="dlist"></div>
 </div>
+
+<!-- ===== トップ：3Dルーレット ===== -->
+<section class="stage" id="stage">
+  <canvas id="wheel" aria-label="OPSMルーレット。コーナーを押すとそのページへ移動します"></canvas>
+  <div class="ui">
+    <span class="en">OPSM — AI Creative Roulette</span>
+    <h1>何が出るかは、<br><em>回して</em>のお楽しみ。</h1>
+    <p>AIで曲を作り、絵を描き、動画を撮り、漫画とゲームも。<br>おぽの創作ぜんぶを、ルーレットにのせました。</p>
+    <button class="spin" id="spin" type="button">SPIN ▶</button>
+    <div class="quick" id="quick"></div>
+  </div>
+  <div class="result" id="result" role="dialog" aria-live="polite">
+    <button class="x" id="rx" type="button" aria-label="閉じる">×</button>
+    <span class="en">Winner</span>
+    <div class="rno num" id="rno"></div>
+    <b id="rt"></b>
+    <p id="rd"></p>
+    <div class="rb"><a class="btn gold" id="rgo" href="#">このテーブルへ →</a><button class="btn" id="ragain" type="button">もう一回</button></div>
+  </div>
+  <div class="scroll">SCROLL ↓</div>
+</section>
 
 <main id="app"></main>
 
 <footer>
   <div class="wrap">
-    <div class="fmm" id="fmm"></div>
-    <div class="big">OPS<i>M</i>の森の秘密基地</div>
+    <div class="big">OPS<i>M</i> ROULETTE</div>
     <p>AIと遊び、AIで創り、世界を少しだけ面白くする。</p>
     <div class="cols" id="fcols"></div>
-    <p class="small"><button type="button" class="linkish" id="replay">オープニングをもう一度見る</button>　<a href="daijiten/">OPSM大辞典</a>　<a href="old.html">旧サイト</a></p>
+    <p class="small"><a href="daijiten/">OPSM大辞典</a>　<a href="old.html">旧サイト</a></p>
     <small id="fbuilt"></small>
   </div>
 </footer>
@@ -105,7 +87,28 @@
 </div>
 <div class="modal" id="modal" role="dialog" aria-label="キャラクター詳細"><div class="box" id="mbox"></div></div>
 
+<script>
+// ルーレットの10コーナー（この順番で盤に並びます）
+window.SECTIONS = [
+  { k: 'music',  t: 'AI音楽',     en: 'MUSIC',     d: '全曲リストとペルソナ' },
+  { k: 'image',  t: 'AI画像',     en: 'IMAGE',     d: 'ギャラリーと投稿作品' },
+  { k: 'video',  t: 'AI動画',     en: 'VIDEO',     d: 'MV・ショート・制作中' },
+  { k: 'manga',  t: 'AI漫画',     en: 'MANGA',     d: 'AIで描く漫画' },
+  { k: 'game',   t: 'AIゲーム',   en: 'GAME',      d: 'ブラウザで遊べる' },
+  { k: 'chara',  t: 'キャラクター', en: 'CHARACTER', d: 'なかまたちの図鑑' },
+  { k: 'story',  t: 'ストーリー', en: 'STORY',     d: '曲から生まれた物語' },
+  { k: 'about',  t: 'OPSMとは',   en: 'ABOUT',     d: '自己紹介と沿革' },
+  { k: 'links',  t: 'リンク',     en: 'LINKS',     d: 'Suno・YouTube・note' },
+  { k: 'topics', t: 'トピック',   en: 'TOPICS',    d: '最近のできごと' },
+];
+(function(){
+  var S = window.SECTIONS;
+  document.getElementById('nav').innerHTML = S.map(function(s){ return '<a href="#' + s.k + '">' + s.t + '</a>'; }).join('');
+  document.getElementById('dlist').innerHTML = '<a href="#top">トップ<small>ROULETTE</small></a>' + S.map(function(s){ return '<a href="#' + s.k + '">' + s.t + '<small>' + s.en + '</small></a>'; }).join('');
+})();
+</script>
 <script src="daijiten/data.js"></script>
-<script src="kichi.js"></script>
+<script src="roulette.js"></script>
+<script type="module" src="wheel.js"></script>
 </body>
 </html>
