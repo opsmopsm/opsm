@@ -39,6 +39,11 @@ canvas{display:block}
 .bar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:linear-gradient(90deg,var(--glow),var(--pink))}
 .time{font-size:12px;color:var(--dim);font-variant-numeric:tabular-nums;flex:none}
 [hidden]{display:none!important}
+body.rec .top,body.rec .ctrl,body.rec #start,body.rec .card img{display:none!important}
+body.rec .card{margin:0 auto;max-width:none;width:fit-content;padding:10px 22px;background:rgba(5,8,26,.55)}
+body.rec .bottom{padding-bottom:28px}
+body.rec .txt{align-items:center;text-align:center}
+body.rec .line{font-size:24px}body.rec .lyric{font-size:15px}
 #start{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;
   background:radial-gradient(ellipse at center,rgba(7,11,34,.25),rgba(7,11,34,.7));text-align:center;padding:24px}
 #start h1{margin:0;font-weight:900;font-size:clamp(30px,8vw,52px);text-wrap:balance;
@@ -87,15 +92,18 @@ const DUR=88;
 const CH=[
  {n:'Verse',t:0},{n:'Pre-Chorus',t:21.5},{n:'Chorus',t:26.5},{n:'Bridge',t:52.5},{n:'Final',t:63.5}];
 const CAP=[
- [0,0,'私を運んでください　どこでもいいから','西暦2999年。ピカピカの未来都市に、夜が来た。'],
- [6,1,'退屈な青い星が　くすんで見える夜','なんでもそろっているのに、ちっともドキドキしない。'],
- [12.5,1,'月でも星でも　あなたとならいい','ピュイーン！　白い宇宙船が降りてきた。'],
- [17,0,'エンジンが鳴るたびに　胸が高鳴るの','「いっしょに行こう」'],
+ [0,0,'退屈な青い星が　くすんで見える夜','西暦2999年。ピカピカの未来都市で、スペ恋ちゃんは泣いていた。'],
+ [4,0,'退屈な青い星が　くすんで見える夜','つまんない。ここには、わたしのドキドキがない。'],
+ [7.8,1,'私を運んでください　どこでもいいから','「わたしを、運んでください……どこでもいいから」'],
+ [11,1,'月でも星でも　あなたとならいい','「月でも、星でも。あなたとなら、いい」'],
+ [14,0,'エンジンが鳴るたびに　胸が高鳴るの','ピュイーン！　白い宇宙船が降りてきた。'],
  [21.5,2,'（早く！）重力なんていらない','「早く！」このまま、飛び立とう。'],
  [26.5,2,'スピード出してよ　宇宙の果てまで','雲をつきぬけて、青が群青に、群青が真っ黒に。'],
- [31,2,'抱きしめて離さないで','「わあ……！」星の瞳の中で、光がはじけた。'],
- [35,2,'光を追い越して','ワープ、スタート！'],
- [42.5,3,'あなたの声だけ　暗闇を照らしてる','真っ暗な宇宙で、聞こえるのはあなたの声だけ。'],
+ [31,2,'抱きしめて離さないで','助手席から見る、はじめての宇宙。'],
+ [34,2,'抱きしめて離さないで','「わあ……！」'],
+ [35.3,2,'光を追い越して','ワープ、スタート！'],
+ [41,2,'あなたの声だけ　暗闇を照らしてる','星の瞳の中で、光がきらきらはじけた。'],
+ [44.5,3,'光を追い越して','宇宙船は、光を追い越していく。'],
  [52.5,3,'銀河の果てまで行こう','時間も距離も、もう関係ない。'],
  [56.5,1,'この瞬間がずっと続けば','ふりかえると、地球はビー玉みたいに小さく光っていた。'],
  [63.5,4,'もう戻れない、でもいいの','「もう、戻れないよ」「でも、いいの」'],
@@ -129,6 +137,111 @@ const texPink=glowTex('rgba(255,255,255,1)','rgba(255,150,200,.6)');
 const texDot=glowTex('rgba(255,255,255,1)','rgba(255,255,255,.3)');
 function sprite(tex,s,col){const m=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,color:col||0xffffff,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true}));m.scale.set(s,s,1);return m;}
 
+let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+// ---------- helpers ----------
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const ease=x=>x<0?0:x>1?1:x*x*(3-2*x);
+const seg01=(t,a,b)=>clamp((t-a)/(b-a),0,1);
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+// ---------- スペ恋ちゃん (rough chibi) ----------
+const toon=(c,e)=>new THREE.MeshToonMaterial({color:c,emissive:e||0x000000});
+function starShape(ro,ri){const s=new THREE.Shape();for(let i=0;i<10;i++){const r=i%2?ri:ro,a=Math.PI/2+i*Math.PI/5;const x=Math.cos(a)*r,y=Math.sin(a)*r;i?s.lineTo(x,y):s.moveTo(x,y);}return s;}
+const dressTex=(()=>{const c=document.createElement('canvas');c.width=64;c.height=128;const g=c.getContext('2d');
+  const gr=g.createLinearGradient(0,0,0,128);gr.addColorStop(0,'#f4f7ff');gr.addColorStop(.45,'#bcd2ff');gr.addColorStop(1,'#2747b8');g.fillStyle=gr;g.fillRect(0,0,64,128);
+  g.fillStyle='#fff';for(let i=0;i<40;i++){g.fillRect(rnd()*64,50+rnd()*78,1.5,1.5);}return new THREE.CanvasTexture(c);})();
+function makeGirl(){
+  const g=new THREE.Group();
+  const skin=toon(0xffdccb,0x120806), hairM=toon(0x161a33,0x05060f), tipM=new THREE.MeshToonMaterial({color:0x5ee8ff,emissive:0x1aa6c8}), whiteM=toon(0xf6f8ff,0x202538);
+  const head=new THREE.Group();head.position.y=1.3;g.add(head);
+  head.add(new THREE.Mesh(new THREE.SphereGeometry(.5,32,24),skin));
+  const cap=new THREE.Mesh(new THREE.SphereGeometry(.54,32,16,Math.PI,Math.PI,0,Math.PI*.6),hairM);cap.position.set(0,.02,-.02);head.add(cap);const capF=new THREE.Mesh(new THREE.SphereGeometry(.54,32,8,0,Math.PI*2,0,Math.PI*.27),hairM);capF.position.set(0,.02,-.02);head.add(capF);
+  const bob=new THREE.Mesh(new THREE.CylinderGeometry(.55,.6,.46,28,1,true,1.0,Math.PI*2-2.0),hairM);bob.material.side=THREE.DoubleSide;bob.position.y=-.14;head.add(bob);
+  const tips=new THREE.Mesh(new THREE.CylinderGeometry(.6,.63,.16,28,1,true,1.0,Math.PI*2-2.0),tipM);tips.material.side=THREE.DoubleSide;tips.position.y=-.44;head.add(tips);
+  for(const s of[1,-1]){const side=new THREE.Mesh(new THREE.BoxGeometry(.14,.62,.22),hairM);side.position.set(s*.47,-.12,.2);head.add(side);
+    const st=new THREE.Mesh(new THREE.BoxGeometry(.15,.14,.23),tipM);st.position.set(s*.47,-.49,.2);head.add(st);}
+  const bang=new THREE.Mesh(new THREE.SphereGeometry(.535,32,8,Math.PI*.18,Math.PI*.64,Math.PI*.1,Math.PI*.24),hairM);bang.material.side=THREE.DoubleSide;head.add(bang);
+  const stars=[],eyes=[];
+  for(const s of[1,-1]){
+    const e=new THREE.Group();e.position.set(s*.19,-.06,.455);e.rotation.y=s*.38;head.add(e);eyes.push(e);
+    const white=new THREE.Mesh(new THREE.CircleGeometry(.135,24),new THREE.MeshBasicMaterial({color:0xffffff}));white.scale.y=1.3;e.add(white);
+    const iris=new THREE.Mesh(new THREE.CircleGeometry(.115,24),new THREE.MeshBasicMaterial({color:0x2453d6}));iris.scale.y=1.3;iris.position.z=.004;e.add(iris);
+    const st=new THREE.Mesh(new THREE.ShapeGeometry(starShape(.085,.036)),new THREE.MeshBasicMaterial({color:0xdff8ff}));st.position.set(0,-.01,.008);e.add(st);stars.push(st);
+    const hl=new THREE.Mesh(new THREE.CircleGeometry(.025,12),new THREE.MeshBasicMaterial({color:0xffffff}));hl.position.set(-.05,.07,.01);e.add(hl);
+    const lash=new THREE.Mesh(new THREE.BoxGeometry(.28,.025,.02),hairM);lash.position.set(0,.165,.005);lash.rotation.z=s*.1;e.add(lash);
+    const bl=new THREE.Mesh(new THREE.CircleGeometry(.07,16),new THREE.MeshBasicMaterial({color:0xff8fb0,transparent:true,opacity:.55}));bl.position.set(s*.3,-.22,.4);bl.rotation.y=s*.65;head.add(bl);}
+  const mouth=new THREE.Mesh(new THREE.CircleGeometry(.035,16),new THREE.MeshBasicMaterial({color:0x7a2a3a}));mouth.position.set(0,-.27,.47);mouth.scale.set(1.2,.5,1);head.add(mouth);
+  const clip=new THREE.Mesh(new THREE.ShapeGeometry(starShape(.1,.045)),new THREE.MeshBasicMaterial({color:0xffe36e,side:THREE.DoubleSide}));clip.position.set(.33,.3,.38);clip.rotation.y=.6;head.add(clip);
+  // tears
+  const tears=[];const tm=new THREE.MeshBasicMaterial({color:0xaee8ff,transparent:true,opacity:.9});
+  for(let i=0;i<8;i++){const d=new THREE.Mesh(new THREE.SphereGeometry(.035,8,6),tm);d.userData={s:i%2?1:-1,o:i*.37};head.add(d);tears.push(d);}
+  // body
+  const dress=new THREE.Mesh(new THREE.CylinderGeometry(.2,.5,.78,24),new THREE.MeshToonMaterial({map:dressTex,emissive:0x101830}));dress.position.y=.62;g.add(dress);
+  const neck=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.12,10),skin);neck.position.y=1.04;g.add(neck);
+  const arms=[];
+  for(const s of[1,-1]){const a=new THREE.Group();a.position.set(s*.22,.95,0);g.add(a);
+    const sl=new THREE.Mesh(new THREE.CylinderGeometry(.075,.1,.42,10),whiteM);sl.position.y=-.2;a.add(sl);
+    const h=new THREE.Mesh(new THREE.SphereGeometry(.075,12,8),skin);h.position.y=-.45;a.add(h);arms.push(a);}
+  const legs=[];
+  for(const s of[1,-1]){const l=new THREE.Group();l.position.set(s*.13,.28,0);g.add(l);
+    const lg=new THREE.Mesh(new THREE.CylinderGeometry(.065,.06,.26,10),skin);lg.position.y=-.13;l.add(lg);
+    const sh=new THREE.Mesh(new THREE.BoxGeometry(.13,.08,.2),whiteM);sh.position.set(0,-.28,.03);l.add(sh);legs.push(l);}
+  g.traverse(o=>{if(o.isMesh)o.castShadow=false;});
+  return {g,head,stars,eyes,mouth,tears,arms,legs};
+}
+const girl=makeGirl();scene.add(girl.g);
+const sparkles=[];for(let i=0;i<14;i++){const s=sprite(i%2?texPink:texCyan,.18);s.material.fog=false;s.userData={a:rnd()*6.28,r:.5+rnd()*.5,o:rnd()*6};girl.head.add(s);sparkles.push(s);}
+function pose(name,t,clock){
+  const G=girl,[aR,aL]=G.arms,[lR,lL]=G.legs;
+  let hx=0,hy=0,hz=0,ax=0,az=.15,lx=0,mouthS=[1.2,.5],tear=0,spark=0,starGlow=1;
+  if(name==='cry'){hx=.42+Math.sin(clock*7)*.03;ax=-2.35;az=.55;tear=1;mouthS=[1.4,.35];}
+  if(name==='plea'){hx=-.42;hy=Math.sin(clock*.9)*.04;ax=-1.25;az=.62;tear=.7;mouthS=[1,.7];}
+  if(name==='look'){hx=-.35;ax=-.2;tear=.3;}
+  if(name==='sit'){lx=-1.45;ax=-.75;az=.35;hx=-.05;hy=-.15;}
+  if(name==='wow'){lx=-1.45;ax=-1.55;az=.6;hx=-.15;mouthS=[1.3,1.3];spark=1;starGlow=1.4;}
+  if(name==='wow2'){lx=-1.45;ax=-.9;az=.45;hx=-.1;hy=.12;mouthS=[2.2,.9];spark=1;starGlow=1.7;}
+  G.head.rotation.set(hx,hy,hz);
+  aR.rotation.set(ax,0,az);aL.rotation.set(ax,0,-az);
+  lR.rotation.x=lL.rotation.x=lx;
+  G.mouth.scale.set(mouthS[0],mouthS[1],1);
+  G.tears.forEach(d=>{const u=d.userData,p=((clock*.9+u.o)%1);d.visible=tear>0&&p<tear;d.position.set(u.s*(.24+p*.04),-.16-p*.45,.42-p*.05);});
+  G.stars.forEach((s,i)=>{const k=starGlow+(spark?Math.sin(clock*9+i*2)*.25:0);s.scale.setScalar(k);s.rotation.z=spark?clock*1.5:0;});
+  sparkles.forEach(s=>{const u=s.userData;s.visible=spark>0;const a=u.a+clock*.8;s.position.set(Math.cos(a)*u.r,Math.sin(a*1.3)*.35,.5+Math.sin(a)*.15);
+    s.material.opacity=.4+.6*Math.abs(Math.sin(clock*4+u.o));s.scale.setScalar(.12+.12*Math.abs(Math.sin(clock*3+u.o)));});
+}
+// worries floating around her (嫌なこと)
+function textSprite(txt){const c=document.createElement('canvas');c.width=512;c.height=96;const g=c.getContext('2d');
+  g.font='700 44px "Zen Maru Gothic",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle='rgba(180,190,230,.95)';g.fillText(txt,256,48);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}));s.scale.set(2.4,.45,1);return s;}
+const GP=V0=>V0;const GIRL_AT=new THREE.Vector3(8,0,40);
+const worries=['ふつうはこうするものだよ','まだできないの？','みんなと同じにして','つまんない'].map((w,i)=>{const s=textSprite(w);s.userData={i};scene.add(s);return s;});
+const deck=new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.7,.12,40),new THREE.MeshStandardMaterial({color:0x2a3a80,emissive:0x16245e}));deck.position.copy(GIRL_AT).add(new THREE.Vector3(0,.06,0));scene.add(deck);
+const deckRing=new THREE.Mesh(new THREE.TorusGeometry(1.65,.03,6,48),new THREE.MeshBasicMaterial({color:0x7fe3ff}));deckRing.rotation.x=Math.PI/2;deckRing.position.copy(GIRL_AT).add(new THREE.Vector3(0,.13,0));scene.add(deckRing);
+const girlLight=new THREE.PointLight(0xbfd8ff,.6,8);scene.add(girlLight);
+
+// ---------- cockpit (inside the ship, at space origin) ----------
+const cockpit=new THREE.Group();cockpit.visible=false;scene.add(cockpit);
+{const panelM=new THREE.MeshStandardMaterial({color:0x8d9bd0,metalness:.4,roughness:.5,emissive:0x111a40});
+ const seatM=new THREE.MeshToonMaterial({color:0x34408a,emissive:0x05081a});
+ const floorM=new THREE.MeshStandardMaterial({color:0x3a4680,emissive:0x0c1236});
+ const fl=new THREE.Mesh(new THREE.BoxGeometry(3.2,.1,4),floorM);fl.position.set(0,-.9,.3);cockpit.add(fl);
+ const dash=new THREE.Mesh(new THREE.BoxGeometry(3,.5,.7),panelM);dash.position.set(0,-.35,-1.45);dash.rotation.x=-.25;cockpit.add(dash);
+ const scr=(x,c)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(.5,.25),new THREE.MeshBasicMaterial({color:c}));m.position.set(x,-.08,-1.3);m.rotation.x=-.75;cockpit.add(m);};
+ scr(-1,0x56d8ff);scr(-.35,0x7fe3ff);scr(.35,0xff9fc8);scr(1,0x56d8ff);
+ for(let i=0;i<10;i++){const b=new THREE.Mesh(new THREE.BoxGeometry(.08,.03,.08),new THREE.MeshBasicMaterial({color:i%3?0x7fe3ff:0xff6f9f}));b.position.set(-1.2+i*.27,-.2,-1.12);cockpit.add(b);}
+ const frameM=new THREE.MeshStandardMaterial({color:0xdfe6ff,metalness:.4,roughness:.4,emissive:0x1a2244});
+ const arch=new THREE.Mesh(new THREE.TorusGeometry(1.7,.06,8,32,Math.PI),frameM);arch.position.set(0,-.25,-1.8);cockpit.add(arch);
+ const arch2=arch.clone();arch2.position.z=.9;arch2.scale.set(1.05,1.05,1);cockpit.add(arch2);
+ for(const s of[1,-1]){const rail=new THREE.Mesh(new THREE.BoxGeometry(.08,.08,2.7),frameM);rail.position.set(s*1.0,1.2,-.45);rail.rotation.z=s*.2;cockpit.add(rail);
+   const side=new THREE.Mesh(new THREE.BoxGeometry(.1,.7,3.6),panelM);side.position.set(s*1.55,-.55,0);cockpit.add(side);}
+ for(const s of[1,-1]){const back=new THREE.Mesh(new THREE.BoxGeometry(.8,.85,.14),seatM);back.position.set(s*.8,-.2,.6);back.rotation.x=-.12;cockpit.add(back);
+   const cush=new THREE.Mesh(new THREE.BoxGeometry(.85,.16,.75),seatM);cush.position.set(s*.8,-.62,.15);cockpit.add(cush);
+   }
+}
+const yoke=new THREE.Mesh(new THREE.TorusGeometry(.18,.025,6,24,Math.PI),new THREE.MeshStandardMaterial({color:0xe0e6ff,emissive:0x202a50}));
+yoke.position.set(-.8,-.12,-.95);yoke.rotation.z=Math.PI;cockpit.add(yoke);
+const cockLight=new THREE.PointLight(0x9fdcff,1.4,6);cockLight.position.set(0,.8,-1.2);cockpit.add(cockLight);
+const faceLight=new THREE.PointLight(0xffffff,0,3);cockpit.add(faceLight);faceLight.position.set(.8,.5,-.6);
+
 // ---------- ground world: future city ----------
 const ground=new THREE.Group();scene.add(ground);
 const gTex=(()=>{const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');
@@ -142,7 +255,7 @@ const winTex=(()=>{const c=document.createElement('canvas');c.width=64;c.height=
   g.fillStyle='#0a1236';g.fillRect(0,0,64,128);
   for(let y=4;y<128;y+=8)for(let x=4;x<64;x+=10){if(Math.random()<.55){g.fillStyle=Math.random()<.8?'#9fe8ff':'#ffc6e0';g.fillRect(x,y,6,4);}}
   return new THREE.CanvasTexture(c);})();
-let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+
 const towerMat=new THREE.MeshStandardMaterial({color:0x8fa6e8,map:winTex,emissiveMap:winTex,emissive:0xffffff,emissiveIntensity:.9,metalness:.3,roughness:.4});
 const glassMat=new THREE.MeshStandardMaterial({color:0xbfe9ff,transparent:true,opacity:.18,emissive:0x2a6aa0,emissiveIntensity:.4,side:THREE.DoubleSide,depthWrite:false});
 const treeMat=new THREE.MeshStandardMaterial({color:0x3fd38a,emissive:0x0f6b3e,emissiveIntensity:.6});
@@ -254,11 +367,6 @@ const heart=(()=>{const n=7000,p=new Float32Array(n*3),c=new Float32Array(n*3);
   return grp;})();
 space.add(heart);
 
-// ---------- helpers ----------
-const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-const ease=x=>x<0?0:x>1?1:x*x*(3-2*x);
-const seg01=(t,a,b)=>clamp((t-a)/(b-a),0,1);
-const V=(x,y,z)=>new THREE.Vector3(x,y,z);
 let yaw=0,pitch=0,dragging=false,px=0,py=0;
 const st=$('stage');
 st.addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;py=e.clientY;st.setPointerCapture(e.pointerId);});
@@ -305,66 +413,97 @@ audio.addEventListener('ended',()=>{pause();T=DUR;});
 
 // ---------- frame ----------
 const tmp=new THREE.Color();
-function frame(now){
-  const dt=Math.min(.05,(now-last)/1000);last=now;
-  if(playing){if(useAudio&&!audio.paused)T=audio.currentTime;else T+=dt;if(T>=DUR){T=DUR;pause();}}
-  const t=T, clock=now/1000;
+function step(t,dt,clock){
   caption(t);
   const inSpace=t>=31;
   ground.visible=!inSpace;space.visible=inSpace;
-  // ambient city motion
   holos.forEach((h,i)=>h.rotation.z=clock*(.5+i%3*.3));
   floaters.forEach((f,i)=>f.position.y+=Math.sin(clock*.8+i)*.02);
   cars.forEach(c=>{const u=c.userData;u.a+=u.sp*dt;c.position.set(Math.cos(u.a)*u.r,u.h,u.cz+Math.sin(u.a)*u.r);c.rotation.z=-u.a;});
-  // runway chase lights
-  const chase=t<21.5?.6:t<24.5?2+ (t-21.5)*3:14;
+  const chase=t<21.5?.6:t<24.5?2+(t-21.5)*3:14;
   rLights.forEach(o=>{const v=(Math.sin(o.i*.6-clock*chase*2)+1)/2;o.s.material.opacity=.35+.65*v;});
-  // throttle
   let thr=t<17?.15:t<21.5?.35:t<24.5?.35+.65*seg01(t,21.5,24.5):1;
   if(t>=34&&t<50)thr=1.6;
   flames.forEach((f,i)=>{const fl=1+Math.sin(clock*40+i)*.08;if(f.isSprite)f.scale.setScalar(3*thr*fl+.5);else{f.scale.set(1,thr*fl*1.4,1);f.material.opacity=.15+.4*Math.min(thr,1);}});
-
-  if(!inSpace){
-    // sky gradient while climbing
+  // ground-only props
+  const onGround=!inSpace;
+  deck.visible=deckRing.visible=onGround;
+  worries.forEach(w=>{const i=w.userData.i;w.visible=onGround&&t<12;
+    const a=i*1.57+clock*.25;w.position.set(GIRL_AT.x+Math.cos(a)*2.4,GIRL_AT.y+1.7+i*.35+Math.sin(clock*.7+i)*.12,GIRL_AT.z+Math.sin(a)*1.2-.6);
+    w.material.opacity=Math.min(seg01(t,.5+i*.9,1.8+i*.9),1-seg01(t,7,9.5))*.85;});
+  let cockShot=false;
+  if(onGround){
     const k=seg01(t,26.5,31);
     tmp.copy(NIGHT).lerp(DEEP,ease(k*1.6)).lerp(BLACK,ease((k-.5)*2));
     scene.background.copy(tmp);scene.fog.color.copy(tmp);scene.fog.near=80;scene.fog.far=520;
     skyStars.material.opacity=.6+.4*k;
     const s=shipGround(t);ship.visible=s.vis;ship.position.copy(s.p);ship.rotation.set(s.rx||0,s.ry||0,s.rz||0);
-    if(t<12.5){const a=-.6+t*.045;look(V(Math.sin(a)*150,85+Math.sin(t*.2)*6,-110+Math.cos(a)*150),V(0,20,-110));}
-    else if(t<21.5){look(V(22,7,26),ship.position.clone().add(V(0,1,0)));}
-    else if(t<25.6){look(V(11,2.6,16),V(0,2.2,-6).lerp(ship.position,seg01(t,24.5,25.6)));}
+    girl.g.visible=t<21.5;girl.g.position.copy(GIRL_AT).add(V(0,.12,0));girlLight.position.copy(GIRL_AT).add(V(.8,2.4,1.6));
+    if(t<7){ // crying on the deck, city behind
+      girl.g.rotation.set(0,.25,0);pose('cry',t,clock);
+      const k2=ease(seg01(t,0,7));
+      look(V(GIRL_AT.x+1.6-.7*k2,1.45+.3*(1-k2),GIRL_AT.z+3.4-1.1*k2),V(GIRL_AT.x,1.15,GIRL_AT.z-.2));
+    }else if(t<14){ // her plea, from "my" eyes (invisible man)
+      girl.g.rotation.set(0,0,0);pose(t<7.8?'cry':'plea',t,clock);
+      const k2=ease(seg01(t,7,9));
+      look(V(GIRL_AT.x+.12*Math.sin(clock*.6),2.25-.1*k2,GIRL_AT.z+2.3-.3*k2),V(GIRL_AT.x,1.32,GIRL_AT.z));
+    }else if(t<21.5){ // ship arrives, she looks up
+      pose('look',t,clock);
+      {const hp=GIRL_AT.clone().add(V(0,1.4,0));const d=hp.clone().sub(ship.position).normalize();girl.g.rotation.y=Math.atan2(-d.x,-d.z);look(hp.clone().add(d.multiplyScalar(3.2)).add(V(.9,.5,0)),ship.position.clone().add(V(0,1,0)));}
+    }else if(t<25.6){look(V(11,2.6,16),V(0,2.2,-6).lerp(ship.position,seg01(t,24.5,25.6)));}
     else{const sh=reduce?0:(Math.random()-.5)*.15;look(ship.position.clone().add(V(sh,5+sh,24)),ship.position.clone().add(V(0,1.5,-20)));}
   }else{
     scene.background.copy(BLACK);scene.fog.near=1e5;scene.fog.far=2e5;
-    ship.visible=true;ship.position.set(0,0,0);
-    // speed profile
     let speed=t<34?60:t<36?60+1500*ease(seg01(t,34,36)):t<50?1560:t<52.5?1560-1530*ease(seg01(t,50,52.5)):t<84?30:30+400*seg01(t,84,88);
     const len=Math.max(.5,speed*.05);
     for(let i=0;i<NS;i++){let z=sp[i*3+2]+speed*dt;if(z>40)z-=1240;sp[i*3+2]=z;
       seg[i*6]=sp[i*3];seg[i*6+1]=sp[i*3+1];seg[i*6+2]=z;seg[i*6+3]=sp[i*3];seg[i*6+4]=sp[i*3+1];seg[i*6+5]=z-len;}
     segGeo.attributes.position.needsUpdate=true;dotGeo.attributes.position.needsUpdate=true;
     streaks.visible=speed>100;dots.visible=speed<=400;
-    // flash at warp start
     $('flash').style.opacity=t>35.3&&t<36.3?(1-Math.abs(t-35.8)*2)*.8:0;
-    ship.rotation.set(0,0,Math.sin(clock*1.3)*.06);
-    // galaxy approaches during bridge
     galaxy.visible=t>=50;galaxy.position.set(-60,-40,-900+500*ease(seg01(t,50,63.5)));galaxy.rotation.y=clock*.05;
     earth.visible=t>=52.5&&t<66;eM.rotation.y=clock*.3;
     heart.visible=t>=60;const hk=ease(seg01(t,60,86));heart.position.set(0,-10,-1100+1080*hk);
     heart.scale.setScalar(1+Math.sin(clock*3)*.03);
-    // camera
-    const shake=reduce?0:(t>36&&t<50?(Math.random()-.5)*.25:0);
-    let from=V(shake,5+shake,24), to=V(0,1,-25);
-    if(t<34.5){const k=ease(seg01(t,31,32.5))*(1-ease(seg01(t,33.5,34.5)));from=V(0,5,24).lerp(V(14,4,-24),k);to=V(0,1,-25).lerp(V(0,.8,-3),k);}
-    if(t>=55&&t<62){const k=ease(seg01(t,55,57))*(1-ease(seg01(t,60,62)));from=from.lerp(V(9,3,2),k);to=to.lerp(earth.position,k);}
-    if(t>=84){from=V(0,5,24).lerp(V(0,2,4),seg01(t,84,88));}
-    look(from,to);
+    cockShot=t<44.5;
+    cockpit.visible=cockShot;ship.visible=!cockShot;girl.g.visible=cockShot;
+    ship.position.set(0,0,0);ship.rotation.set(0,0,Math.sin(clock*1.3)*.06);
+    const shake=reduce?0:(t>36&&t<50?(Math.random()-.5)*(cockShot?.04:.25):0);
+    if(cockShot){
+      girl.g.position.set(.8,-.86,.12);girl.g.rotation.set(0,Math.PI,0);
+      yoke.rotation.x=Math.sin(clock*1.7)*.12;yoke.rotation.y=Math.sin(clock*1.1)*.1; // the invisible pilot
+      const warp=t>=35.3;
+      cockLight.color.setHSL((clock*.15)%1,.6,.7);cockLight.intensity=warp?1.8+Math.sin(clock*13)*.5:1.2;
+      const close=(t>=34&&t<35.3)||(t>=41&&t<44.5);
+      pose(t<32?'sit':t<41?'wow':'wow2',t,clock);
+      if(t<32){girl.head.rotation.y=-.45;} // glances at the empty driver seat (me)
+      faceLight.intensity=close?(warp?.9+Math.sin(clock*17)*.35:.6):0;faceLight.color.setHSL((clock*.4)%1,.8,.75);
+      if(close){
+        const hp=V(.8,.44,.12);
+        look(V(.5+shake,.6+shake,-1.28),hp);
+      }else{
+        const k=ease(seg01(t,31,34));
+        look(V(-.35+shake,1.05+shake,2.3-.25*k),V(.3,.25,-6));
+      }
+    }else{
+      faceLight.intensity=0;
+      let from=V(shake,5+shake,24), to=V(0,1,-25);
+      if(t>=55&&t<62){const k=ease(seg01(t,55,57))*(1-ease(seg01(t,60,62)));from=from.lerp(V(9,3,2),k);to=to.lerp(earth.position,k);}
+      if(t>=84){from=V(0,5,24).lerp(V(0,2,4),seg01(t,84,88));}
+      look(from,to);
+    }
   }
   $('end').style.opacity=t>=84?1:0;
   renderer.render(scene,camera);
+}
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(playing){if(useAudio&&!audio.paused)T=audio.currentTime;else T+=dt;if(T>=DUR){T=DUR;pause();}}
+  step(T,dt,now/1000);
   requestAnimationFrame(frame);
 }
+window.renderAt=(t,dt)=>{T=t;step(t,dt,t);};
+
 caption(T);requestAnimationFrame(frame);
 </script>
 </body>
