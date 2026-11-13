@@ -326,7 +326,7 @@
     <ul>
       <li><b>パソコン</b>：←↑↓→/WASD あるく／Space ジャンプ（空中で長押しで滑空）／E 木にしがみつく／Shift フルスピード／X うたう／Z なく／クリック その場所へ／ドラッグ カメラ</li>
       <li><b>スマホ</b>：画面の左半分のどこでも指を置くとスティック／右のボタンでアクション／右側をドラッグでカメラ（歩くと自動で後ろに回ります）</li>
-      <li>スマホとPCは操作がちがうので、タイムは端末ごとに記録・表示します（スマホは どんぐり4倍・吸いこみ範囲広め・天敵の攻撃は1/3）</li>
+      <li>スマホとPCは操作がちがうので、タイムは端末ごとに記録・表示します（スマホは どんぐり多め・吸いこみ範囲広め・天敵の攻撃は1/3）</li>
     </ul>
     <h3>🌰 木の実</h3>
     <ul>
@@ -1245,9 +1245,9 @@ let goldT=35+Math.random()*12, feverT=0, feverSpawnT=0, feverCount=0, spawnT=0;
 function spawner(){
   if(fest.on) return;
   const tot=total();
-  const accTarget=Math.min(4+Math.floor(tot/25),6)*(isTouch?4:1);
+  const accTarget=Math.min(8+Math.floor(tot/12),12)*(isTouch?4:1);
   let pend=pendingOf('acorn');
-  while(pend<accTarget && pend<remaining('acorn')){ let p; for(let t=0;t<12;t++){ const near=Math.random()<.35; p=near?drySpot(mo.position.x,mo.position.z,5,14,3):drySpot(); if(!items.some(i=>i.kind==='acorn'&&i.state==='idle'&&Math.hypot(i.g.position.x-p.x,i.g.position.z-p.z)<(isTouch?3.2:6))) break; }
+  while(pend<accTarget && pend<remaining('acorn')){ let p; for(let t=0;t<12;t++){ const near=Math.random()<.35; p=near?drySpot(mo.position.x,mo.position.z,5,14,3):drySpot(); if(!items.some(i=>i.kind==='acorn'&&i.state==='idle'&&Math.hypot(i.g.position.x-p.x,i.g.position.z-p.z)<(isTouch?2.5:4.5))) break; }
     spawnItem('acorn',p.x,groundAt(p.x,p.z,9).h,p.z); pend++; }
   if(save.unlocked.chestnut){ const nb=items.filter(i=>i.kind==='burr').length; const left=remaining('chestnut')-pendingOf('chestnut');
     if(nb<3 && left>0){ let p; if(Math.random()<.25){const s=stumpDefs[(Math.random()*4)|0]; p={x:s.x,z:s.z};} else p=drySpot(mo.position.x,mo.position.z,3,13,2.5);
