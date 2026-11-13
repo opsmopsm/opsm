@@ -187,7 +187,7 @@
   #danger{inset:0;box-shadow:inset 0 0 0 0 rgba(255,40,30,0);transition:box-shadow .2s;z-index:4}
   #danger.on{box-shadow:inset 0 0 90px 30px rgba(255,40,30,.55);animation:dg .3s infinite alternate}
   @keyframes dg{to{box-shadow:inset 0 0 60px 18px rgba(255,120,30,.35)}}
-  #timer{font-size:12px;margin:-2px 0 6px;display:flex;align-items:baseline;gap:4px}
+  #timer{font-size:12px;margin:-2px 0 6px;display:flex;align-items:baseline;gap:4px;flex-wrap:wrap;white-space:nowrap}
   #timerCB{font-size:11px;font-weight:800;color:#e0662a;transition:transform .15s}
   #timerCB.pop{transform:scale(1.35)}
   #timer b{font-size:16px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
@@ -326,7 +326,7 @@
     <h3>⚠️ 敵</h3>
     <ul>
       <li><b>イタチ</b>（8個〜）・<b>テン</b>（25個〜）・<b>アナグマ</b>（40個〜）：見つかると追いかけてくる。足もとに<b style="color:#e53b2a">赤い矢印</b>が出たら<b>突進</b>の合図 → 横によけるか、ジャンプでかわそう</li>
-      <li><b>ワシ</b>（55個〜）：<b style="color:#e53b2a">「!!」と赤い円</b>が出たら急降下してくる。円から逃げるか、木にしがみつく</li>
+      <li><b>ワシ</b>（70個〜）：<b style="color:#e53b2a">「!!」と赤い円</b>が出たら急降下してくる。円から逃げるか、木にしがみつく</li>
       <li>当たると<b>2秒スタン＆木の実3個ポロリ</b>（落ちた実は拾いなおせる）</li>
       <li><b style="color:#e53b2a">90個から</b>：森の敵が<b>怒って凶暴化</b>！ 速く・しつこく・数も増える。ラスト10個は気をつけて</li>
       <li><b>木にしがみつく</b>と見つからない。<b>フルスピード</b>中の体当たりで撃退もできる</li>
@@ -1126,7 +1126,7 @@ const friendTemplate=(()=>{ const c=squashG.clone(true); const rm=[]; const keep
 /* text textures */
 const popTexCache={};
 function popTex(txt,color='#ffffff'){ const key=txt+color; if(popTexCache[key]) return popTexCache[key];
-  return popTexCache[key]=canvasTex(256,128,(g)=>{g.font='800 64px "M PLUS Rounded 1c",sans-serif';g.textAlign='center';g.textBaseline='middle';g.lineWidth=12;g.strokeStyle='#7a4a14';g.strokeText(txt,128,64);g.fillStyle=color;g.fillText(txt,128,64);}); }
+  return popTexCache[key]=canvasTex(256,128,(g)=>{g.font='800 64px "M PLUS Rounded 1c",sans-serif';g.textAlign='center';g.textBaseline='middle';g.lineWidth=12;g.strokeStyle='#7a4a14';g.strokeText(txt,128,64,232);g.fillStyle=color;g.fillText(txt,128,64,232);}); }
 const sayTexCache={};
 function sayTex(txt){ if(sayTexCache[txt]) return sayTexCache[txt];
   return sayTexCache[txt]=canvasTex(512,128,(g)=>{ g.font='800 46px "M PLUS Rounded 1c",sans-serif'; const w=Math.min(500,g.measureText(txt).width+44);
@@ -1145,7 +1145,7 @@ const KINDS=['acorn','chestnut','walnut'];
 const SAVE_KEY='momonga-forest-v4';
 const save={counts:{acorn:0,chestnut:0,walnut:0},unlocked:{acorn:true,chestnut:false,walnut:false},ach:{},cleared:false,abil:{},seen:{},crew:{},clearTime:0,
   stats:{time:0,cbonus:0,glides:0,maxCombo:0,pets:0,songs:0,splash:0,bounces:0,bonus:0,hides:0,hits:0}};
-try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); if(s){ Object.assign(save.counts,s.counts||{}); Object.assign(save.unlocked,s.unlocked||{}); Object.assign(save.ach,s.ach||{}); Object.assign(save.abil,s.abil||{}); Object.assign(save.seen,s.seen||{}); Object.assign(save.crew,s.crew||{}); save.clearTime=+s.clearTime||0; save.clearRaw=+s.clearRaw||0; save.clearBonus=+s.clearBonus||0; save.cleared=!!s.cleared; Object.assign(save.stats,s.stats||{}); } }catch(e){}
+try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); if(s){ Object.assign(save.counts,s.counts||{}); Object.assign(save.unlocked,s.unlocked||{}); Object.assign(save.ach,s.ach||{}); Object.assign(save.abil,s.abil||{}); Object.assign(save.seen,s.seen||{}); Object.assign(save.crew,s.crew||{}); save.clearTime=+s.clearTime||0; save.clearRaw=+s.clearRaw||0; save.clearBonus=+s.clearBonus||0; save.clearAch=+s.clearAch||0; save.cleared=!!s.cleared; Object.assign(save.stats,s.stats||{}); } }catch(e){}
 function saveGame(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){} }
 const total=()=>KINDS.reduce((s,k)=>s+Math.min(DEF[k].quota,save.counts[k]),0);
 const remaining=k=>save.cleared?99:DEF[k].quota-save.counts[k];
@@ -1211,6 +1211,15 @@ function drySpot(cx=0,cz=0,minR=2,maxR=19,avoidPlayer=2.2){
     return {x,z}; }
   return {x:cx+(Math.random()-.5)*4,z:cz+(Math.random()-.5)*4};
 }
+const airSpots=[];
+{ // trails of floating acorns you can only grab while gliding
+  const trails=[ {x:6.1,z:-4.7,tx:11.4,tz:-11.4,y0:3.0,y1:1.7,n:5,d0:1.8,step:2.0},
+                 {x:-4.1,z:-4.2,tx:-1.5,tz:-9.5,y0:3.4,y1:2.0,n:5,d0:1.6,step:1.5},
+                 {x:4.6,z:-3.9,tx:9.5,tz:2.5,y0:2.6,y1:1.6,n:5,d0:1.8,step:1.6} ];
+  for(const tr of trails){ const L=Math.hypot(tr.tx-tr.x,tr.tz-tr.z), ux=(tr.tx-tr.x)/L, uz=(tr.tz-tr.z)/L;
+    for(let i=0;i<tr.n;i++){ const d=tr.d0+i*tr.step; let x=tr.x+ux*d, z=tr.z+uz*d; const y=tr.y0+(tr.y1-tr.y0)*i/(tr.n-1);
+      if(colliders.some(c=>c.top>5&&Math.hypot(c.x-x,c.z-z)<c.r+.5)) continue; airSpots.push({x,y,z,t:0,item:null,resp:30}); } }
+}
 const walnutSpots=[];
 { let a=0.2; let n=0; while(n<5 && a<7){ const x=POND.x+Math.cos(a)*1.3, z=POND.z+Math.sin(a)*1.3; a+=1.05;
     if(Math.hypot(x-(POND.x+.55),z-(POND.z+.35))<.95) continue; walnutSpots.push({x,y:0,z,t:0,item:null}); n++; }
@@ -1227,6 +1236,7 @@ function spawner(){
   if(save.unlocked.chestnut){ const nb=items.filter(i=>i.kind==='burr').length; const left=remaining('chestnut')-pendingOf('chestnut');
     if(nb<3 && left>0){ let p; if(Math.random()<.25){const s=stumpDefs[(Math.random()*4)|0]; p={x:s.x,z:s.z};} else p=drySpot(mo.position.x,mo.position.z,3,13,2.5);
       const b=spawnItem('burr',p.x,groundAt(p.x,p.z,9).h,p.z); b.n=Math.min(3,left); } }
+  for(const sp of airSpots){ if(sp.item||sp.t>0) continue; if(remaining('acorn')-pendingOf('acorn')<=0) break; sp.item=spawnItem('acorn',sp.x,sp.y,sp.z); sp.item.spot=sp; sp.item.air=true; }
   if(save.unlocked.walnut){ for(const sp of walnutSpots){ if(sp.item||sp.t>0) continue; if(remaining('walnut')-pendingOf('walnut')<=0) break; sp.item=spawnItem('walnut',sp.x,sp.y,sp.z); sp.item.spot=sp; } }
 }
 function startFever(){ feverT=7; feverCount=0; $('fever').classList.add('on'); toast('どんぐりの雨！','',1600); SFX.fever(); friendSay('どんぐりの雨だ〜！'); }
@@ -1351,8 +1361,8 @@ const ACH=[
  ['glide','🪂','ジャンピン・カックー！','はじめて滑空した'],['longglide','🌬️','空のおさんぽ','3秒以上滑空した'],['bounce','🍄','ぽよよん','赤いキノコでジャンプした'],
  ['shelf','🌲','ひみつの棚','木の上のキノコ棚に乗った'],['island','🏝️','島に上陸','池の島にたどりついた'],['splash','💦','ぽちゃん','池に落ちた'],
  ['cheek','🐹','ほっぺパンパン','頬袋をナッツでいっぱいにした'],['gold','🌟','金のどんぐり','フィーバーを起こした'],
- ['chest','🌰','秋の味覚','栗を拾った'],['walnut','🥜','胡桃の勇者','胡桃を拾った'],['smoke','💨','ドロン！','忍者の煙玉で敵を追い払った'],['forms','🚀','能力コンプリート','すべての能力を身につけた'],['speedrun','⏱','スピードスター','15分以内にクリア'],
- ['sing','🎵','とんでけ〜','サビを歌った'],['hide','🌳','静かにじっと…','木にしがみついて敵をやりすごした'],['dash','💨','パワー全開フルスピード','フルスピードで敵をはねかえした'],
+ ['chest','🌰','秋の味覚','栗を拾った'],['walnut','🥜','胡桃の勇者','胡桃を拾った'],['smoke','💨','ドロン！','忍者の煙玉で敵を追い払った'],['forms','🚀','能力コンプリート','すべての能力を身につけた'],['speedrun','⏱','スピードスター','5分以内にクリア'],
+ ['sing','🎵','とんでけ〜','♪ボタンで歌った'],['hide','🌳','静かにじっと…','木にしがみついて敵をやりすごした'],['dash','💨','パワー全開フルスピード','フルスピードで敵をはねかえした'],
  ['fly','🌙','よぞらをかっくう','空を飛んだ'],['crew5','🏡','ねぐらがにぎやか','5種類のモモンガが集まった'],['crewAll','🐿️','モモンガ大集合','14種類ぜんぶ集まった'],['clear','👑','森のレジェンド','100個集めてお祭り'],
 ];
 let achQ=[], achShowing=false;
@@ -1360,7 +1370,7 @@ function ach(id){ if(save.ach[id]) return; save.ach[id]=Date.now(); saveGame(); 
 function showAch(){ if(achShowing||!achQ.length) return; achShowing=true; const a=achQ.shift(); const el=$('achv');
   el.innerHTML=`🏆 実績解除<b>${a[1]} ${a[2]}</b>`; el.classList.add('on'); SFX.ach();
   setTimeout(()=>{el.classList.remove('on'); setTimeout(()=>{achShowing=false; showAch();},400);},2300); }
-function renderAch(){ $('achList').innerHTML=ACH.map(a=>`<li class="${save.ach[a[0]]?'':'no'}"><i>${save.ach[a[0]]?a[1]:'？'}</i><div><b>${a[2]}</b>${a[3]}</div></li>`).join(''); }
+function renderAch(){ $('achList').innerHTML=`<li style="justify-content:center;font-weight:800;color:#b5651d">🏆 全部そろえてクリアすると タイム -1分！</li>`+ACH.map(a=>`<li class="${save.ach[a[0]]?'':'no'}"><i>${save.ach[a[0]]?a[1]:'？'}</i><div><b>${a[2]}</b>${a[3]}</div></li>`).join(''); }
 $('bAch').addEventListener('click',()=>{renderAch(); $('achPanel').style.display='flex';});
 $('achClose').addEventListener('click',()=>{$('achPanel').style.display='none';});
 $('resetBtn').addEventListener('click',()=>{ const b=$('resetBtn'); if(!b.dataset.sure){b.dataset.sure=1;b.textContent='ほんとうに？もう一度押すとリセット';return;}
@@ -1530,7 +1540,7 @@ function stopSong(silent){
   $('lyric').classList.remove('on'); $('bSing').classList.remove('down');
 }
 function finishSong(){ const wasFest=song.fest; stopSong(); if(wasFest) return; save.stats.songs++; ach('sing'); saveGame(); say(pick('sing'),{force:true}); friendsHop(); }
-function toggleSing(){ if(fest.on) return; if(song.on) stopSong(); else startSong(); }
+function toggleSing(){ if(fest.on) return; if(song.on) stopSong(); else { startSong(); ach('sing'); } }
 function singKakkuSnippet(){ if(!ac || song.on) return; const t0=ac.currentTime+.02;
   const syl=[{s:0,e:.75,pts:[[0,72]]},{s:.9,e:6.5,pts:[[.9,69],[2.2,67],[2.9,65]],vib:[3.6,38,6.4]}];
   scheduleVoice(syl,t0,t0+7*S16,{peak:.15,wet:.3}); }
@@ -1751,7 +1761,7 @@ const ENEMY_DEF={
   weasel:{name:'イタチ',at:8, speed:4.1, notice:11.5, lunge:{wind:.6,spd:12.5,dur:.6,cd:1.4}, build:()=>buildMustelid({body:0x9a5a2a,belly:0xf0d9b5,legs:0x6e3e1c,len:.95,h:.27})},
   marten:{name:'テン',at:25, speed:4.0, notice:12, lunge:{wind:.5,spd:13.5,dur:.55,cd:1.2}, build:()=>buildMustelid({body:0xd8a23e,belly:0xf6e7c0,face:0xfff4dc,legs:0x4a2f17,tail:0xc58d2e,tip:0x4a2f17,len:1.05,h:.3,bushy:true})},
   badger:{name:'アナグマ',at:40, speed:3.3, notice:11, lunge:{wind:.8,spd:10.5,dur:.85,cd:1.6}, build:buildBadger},
-  eagle:{name:'ワシ',at:55, speed:0, notice:0, build:buildEagle},
+  eagle:{name:'ワシ',at:70, speed:0, notice:0, build:buildEagle},
 };
 const enemies=[];
 let enemyT=18;
@@ -2308,12 +2318,15 @@ $('rankName').addEventListener('keyup',e=>e.stopPropagation());
 $('bRank').addEventListener('click',()=>{ renderRank(); $('rankPanel').style.display='flex'; });
 $('rankClose').addEventListener('click',()=>{ $('rankPanel').style.display='none'; });
 setTimeout(initRank,0);
-function effTime(){ return Math.max(0,save.stats.time-(save.stats.cbonus||0)); }
+function effTime(){ return Math.max(0,save.stats.time-(save.stats.cbonus||0)-(save.stats.abonus||0)); }
 function bonusFlash(){ const e=$('timerCB'); e.classList.add('pop'); clearTimeout(bonusFlash._t); bonusFlash._t=setTimeout(()=>e.classList.remove('pop'),160); }
+function achAllReady(){ const skip=['clear','speedrun','crewAll']; const left=ACH.filter(a=>!skip.includes(a[0])&&!save.ach[a[0]]).length; const crewOk=Object.keys(crew).length>=CREW.length-(crew.maracas?0:1); return left===0 && crewOk; }
 function recordClearTime(){
-  const t=effTime(); save.clearTime=t; save.clearRaw=save.stats.time; save.clearBonus=save.stats.cbonus||0; saveGame();
+  save.stats.abonus = achAllReady()? 60 : 0;
+  if(save.stats.abonus) setTimeout(()=>toast('実績コンプ！','-1分',2200),1600);
+  const t=effTime(); save.clearTime=t; save.clearRaw=save.stats.time; save.clearBonus=save.stats.cbonus||0; save.clearAch=save.stats.abonus; saveGame();
   if(!localBest || t<localBest){ localBest=t; try{ localStorage.setItem(BEST_KEY,String(t)); }catch(e){} }
-  if(t<15*60) ach('speedrun');
+  if(t<5*60) ach('speedrun');
   // already registered? update automatically when faster
   if(rank.mine && t<rank.mine.time) submitRank();
   renderRankEntry();
@@ -2463,7 +2476,7 @@ function startFestival(){
 function fillResult(){
   const s=save.stats;
   renderRankEntry();
-  $('clearStats').innerHTML=`<div class="tline">⏱ クリアタイム <b>${fmtTime(save.clearTime||effTime())}</b><small>プレイ ${fmtTime(save.clearRaw||s.time)} − コンボボーナス ${(save.clearBonus||s.cbonus||0).toFixed(1)}秒</small></div><div>🔥 最大コンボ<br><b>${s.maxCombo}</b></div><div>🪂 カックー回数<br><b>${s.glides}</b></div><div>🌳 かくれた回数<br><b>${s.hides}</b></div><div>🐿️ 仲間<br><b>${Object.keys(crew).length}/${CREW.length}</b></div><div>🍄 ぽよよん<br><b>${s.bounces}</b></div>`;
+  $('clearStats').innerHTML=`<div class="tline">⏱ クリアタイム <b>${fmtTime(save.clearTime||effTime())}</b><small>プレイ ${fmtTime(save.clearRaw||s.time)} − コンボ ${(save.clearBonus||s.cbonus||0).toFixed(1)}秒${(save.clearAch||s.abonus)?' − 実績コンプ 60秒':''}</small></div><div>🔥 最大コンボ<br><b>${s.maxCombo}</b></div><div>🪂 カックー回数<br><b>${s.glides}</b></div><div>🌳 かくれた回数<br><b>${s.hides}</b></div><div>🐿️ 仲間<br><b>${Object.keys(crew).length}/${CREW.length}</b></div><div>🍄 ぽよよん<br><b>${s.bounces}</b></div>`;
   const text=`「モモンガと光の森」でナッツを100個集めてクリア！🐿️🌰\n⏱ タイム ${fmtTime(save.clearTime||s.time)}／最大${s.maxCombo}コンボ／カックー${s.glides}回\nさぁ、行けっ！──モモンガ！今、風となれ！\n#とんでけモモンガ #ジャンピンカックー #opsm`;
   $('shareX').href='https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent('https://youtu.be/XjL1bWc2ZJs');
 }
@@ -2749,6 +2762,7 @@ function update(dt){
   // ---------- collectibles
   if(started && !fest.on){ spawnT-=dt; if(spawnT<=0){ spawnT=.4; spawner(); } }
   for(const sp2 of walnutSpots) if(sp2.t>0) sp2.t-=dt;
+  for(const sp2 of airSpots) if(sp2.t>0) sp2.t-=dt;
   if(started && feverT<=0 && !fest.on){ goldT-=dt; if(goldT<=0){ goldT=42+Math.random()*20; if(!items.some(i=>i.kind==='gold')){ const p=drySpot(mo.position.x,mo.position.z,3,8,2.5); spawnItem('gold',p.x,groundAt(p.x,p.z,9).h,p.z); say('あっ、金色のなにか…！',{gold:true,force:true}); } } }
   if(feverT>0){ feverT-=dt; feverSpawnT-=dt;
     if(feverSpawnT<=0 && feverCount<16){ feverSpawnT=feverCount<6?.07:.3; const ks=KINDS.filter(k=>save.unlocked[k] && remaining(k)-pendingOf(k)>0);
@@ -2775,7 +2789,7 @@ function update(dt){
             spawnItem('chestnut',it.g.position.x,it.baseY+.3,it.g.position.z,'air',v); }
           for(let k=0;k<6;k++) spawn(puffTex,it.g.position.clone().add(new THREE.Vector3(0,.2,0)),{vel:new THREE.Vector3((Math.random()-.5)*2,1+Math.random(),(Math.random()-.5)*2),life:.5,size:.3,color:0xd8e0a0});
           removeItem(it); continue; }
-        if(it.spot){ it.spot.item=null; it.spot.t=3.5; }
+        if(it.spot){ it.spot.item=null; it.spot.t=it.spot.resp||3.5; }
         collect(it);
       }
     } else if(it.state==='air'){
