@@ -117,6 +117,11 @@
   #achList li i{font-style:normal;font-size:20px;width:26px;text-align:center}
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;text-align:left;font-size:13px;margin:12px 0}
   .stats b{font-size:16px}
+  #scoreBox{margin:6px 0 4px}
+  #scoreImg{width:100%;border-radius:14px;box-shadow:0 4px 14px rgba(40,30,10,.25);display:block}
+  .sbtns{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+  .sbtns .btn{margin:0;padding:8px 14px;font-size:13px}
+  #scMsg{font-size:11.5px;opacity:.75;margin-top:6px}
   .stats .tline{grid-column:1/-1;text-align:center;background:#fff4c8;border-radius:12px;padding:6px}
   .stats .tline b{font-size:22px;color:#b5651d}
   .stats .tline small{display:block;font-size:11.5px;opacity:.75}
@@ -264,7 +269,7 @@
       <b>JUMPING</b>で跳んで、空中で長押しすると<b>KAKKU</b>（滑空）！<br>集めると能力が自動で身につくよ（10・20・40・60・80個）<br>
       10個ごとに、いろんなモモンガが<b>ねぐら</b>に集まってくるよ
     </div>
-    <p style="font-size:12.5px;opacity:.8">⏱ タイムアタック！ 100個集めるまでのタイムでランキングに挑戦<br>イタチ・テン・アナグマ・ワシに当たると2秒スタン＆ナッツ3個ポロリ。木にしがみつけば見つからない</p>
+    <p style="font-size:12.5px;opacity:.8">⏱ タイムアタック！ 100個集めるまでのタイムに挑戦。クリアしたらスコア画像を𝕏にポスト！<br>イタチ・テン・アナグマ・ワシに当たると2秒スタン＆ナッツ3個ポロリ。木にしがみつけば見つからない</p>
     <button id="go" class="btn">はじめる</button><br>
     <button class="btn sub" id="startHelp">📖 あそびかた</button>
     <button class="btn sub reset" id="startReset" style="display:none">🔄 さいしょから</button>
@@ -275,7 +280,7 @@
     <h2>☰ メニュー</h2>
     <div class="menu">
       <button class="btn mbtn" id="bHelp">📖 あそびかた</button>
-      <button class="btn mbtn" id="bRank">🏁 ランキング</button>
+      <button class="btn mbtn" id="bRank" style="display:none"></button>
       <button class="btn mbtn" id="mZukan">🐿️ モモンガ図鑑</button>
       <button class="btn mbtn" id="mAch">🏆 実績</button>
       <button class="btn mbtn" id="bResult" style="display:none">🎉 リザルト</button>
@@ -307,7 +312,7 @@
   <div class="box help">
     <h2>📖 あそびかた</h2>
     <h3>🎯 目的</h3>
-    <p>どんぐり<b>50</b>・栗<b>30</b>・胡桃<b>20</b>、あわせて<b>100個</b>集めるとクリア。森のお祭りがはじまるよ。<br>100個までのタイムで、ランキングに挑戦できます。</p>
+    <p>どんぐり<b>50</b>・栗<b>30</b>・胡桃<b>20</b>、あわせて<b>100個</b>集めるとクリア。森のお祭りがはじまるよ。<br>100個までのタイムを競おう。クリア後はスコア画像を𝕏にポストできます。</p>
     <h3>🎮 操作</h3>
     <ul>
       <li><b>パソコン</b>：←↑↓→/WASD あるく／Space ジャンプ（空中で長押しで滑空）／E 木にしがみつく／Shift フルスピード／X うたう／Z なく／クリック その場所へ／ドラッグ カメラ</li>
@@ -380,7 +385,10 @@
       <div id="rankMsg" style="font-size:12px;opacity:.75"></div>
     </div>
     <div class="stats" id="clearStats"></div>
-    <a class="btn x" id="shareX" target="_blank" rel="noopener">𝕏 でシェア</a>
+    <div id="scoreBox"><img id="scoreImg" alt="スコア画像"><div class="sbtns">
+      <button class="btn sub" id="scCopy">📋 画像をコピー</button><button class="btn sub" id="scSave">💾 画像を保存</button><button class="btn sub" id="scShare" style="display:none">📤 共有</button></div>
+      <div id="scMsg">画像をコピー → 𝕏でポスト → 投稿欄に貼り付け（Ctrl+V）</div></div>
+    <a class="btn x" id="shareX" target="_blank" rel="noopener">𝕏 でポスト</a>
     <a class="btn yt" href="https://youtu.be/XjL1bWc2ZJs" target="_blank" rel="noopener">▶ MVを見る</a><br>
     <button class="btn" id="clearClose">このまま森であそぶ</button>
     <button class="btn sub" id="festAgain">お祭りをもう一度</button>
@@ -2317,7 +2325,7 @@ $('rankName').addEventListener('keydown',e=>{ e.stopPropagation(); if(e.key==='E
 $('rankName').addEventListener('keyup',e=>e.stopPropagation());
 $('bRank').addEventListener('click',()=>{ renderRank(); $('rankPanel').style.display='flex'; });
 $('rankClose').addEventListener('click',()=>{ $('rankPanel').style.display='none'; });
-setTimeout(initRank,0);
+
 function effTime(){ return Math.max(0,save.stats.time-(save.stats.cbonus||0)-(save.stats.abonus||0)); }
 function bonusFlash(){ const e=$('timerCB'); e.classList.add('pop'); clearTimeout(bonusFlash._t); bonusFlash._t=setTimeout(()=>e.classList.remove('pop'),160); }
 function achAllReady(){ const skip=['clear','speedrun','crewAll']; const left=ACH.filter(a=>!skip.includes(a[0])&&!save.ach[a[0]]).length; const crewOk=Object.keys(crew).length>=CREW.length-(crew.maracas?0:1); return left===0 && crewOk; }
@@ -2328,8 +2336,6 @@ function recordClearTime(){
   if(!localBest || t<localBest){ localBest=t; try{ localStorage.setItem(BEST_KEY,String(t)); }catch(e){} }
   if(t<5*60) ach('speedrun');
   // already registered? update automatically when faster
-  if(rank.mine && t<rank.mine.time) submitRank();
-  renderRankEntry();
 }
 
 /* ------------------------------------------------------------------ */
@@ -2473,9 +2479,36 @@ function startFestival(){
       startSong({t0:fest.t0+32*S16,fest:true,peak:.22}); fest.ready=true; }
   },900);
 }
+const crewImgs={}; for(const k in CREW_IMG){ const im=new Image(); im.src=CREW_IMG[k]; crewImgs[k]=im; }
+let scoreBlob=null, scoreURL='';
+function rr(g,x,y,w,h,r){ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+function makeScoreImage(){
+  const W=1200,H=675, c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d'); const s=save.stats;
+  try{ const src=snapScene(); const sw=src.width, sh=src.height, k=Math.max(W/sw,H/sh); g.drawImage(src,(W-sw*k)/2,(H-sh*k)/2,sw*k,sh*k); }catch(e){ g.fillStyle='#4f7d2b'; g.fillRect(0,0,W,H); }
+  const gr=g.createLinearGradient(0,0,W,0); gr.addColorStop(0,'rgba(30,20,8,.82)'); gr.addColorStop(.62,'rgba(30,20,8,.55)'); gr.addColorStop(1,'rgba(30,20,8,.1)'); g.fillStyle=gr; g.fillRect(0,0,W,H);
+  const F='"M PLUS Rounded 1c","Hiragino Maru Gothic ProN",sans-serif';
+  g.textBaseline='alphabetic'; g.fillStyle='#ffe9a8'; g.font=`800 34px ${F}`; g.fillText('モモンガと光の森',60,82);
+  g.fillStyle='#fff'; g.font=`800 64px ${F}`; g.fillText('🎉 100個 クリア！',56,160);
+  g.fillStyle='#ffd25a'; g.font=`800 30px ${F}`; g.fillText('⏱ クリアタイム',62,232);
+  g.font=`800 120px ${F}`; g.fillStyle='#fff'; g.shadowColor='rgba(255,180,60,.7)'; g.shadowBlur=24; g.fillText(fmtTime(save.clearTime||effTime()),56,345); g.shadowBlur=0;
+  g.font=`700 24px ${F}`; g.fillStyle='rgba(255,255,255,.85)';
+  g.fillText(`プレイ ${fmtTime(save.clearRaw||s.time)}  −  コンボ ${(save.clearBonus||s.cbonus||0).toFixed(1)}秒${(save.clearAch||s.abonus)?'  −  実績コンプ 60秒':''}`,62,390);
+  const stats=[['🔥 最大コンボ',s.maxCombo],['🪂 カックー',s.glides+'回'],['🐿️ 仲間',Object.keys(crew).length+'/'+CREW.length],['🏆 実績',Object.keys(save.ach).length+'/'+ACH.length]];
+  stats.forEach(([l,v],i)=>{ const x=60+i*175, y=425; g.fillStyle='rgba(255,251,234,.92)'; rr(g,x,y,160,92,18); g.fill(); g.fillStyle='#8a5a20'; g.font=`800 19px ${F}`; g.fillText(l,x+14,y+34); g.fillStyle='#4a2f17'; g.font=`800 36px ${F}`; g.fillText(String(v),x+14,y+76); });
+  const ids=CREW.map(x=>x.id).filter(id=>crew[id]); const R0=26; ids.forEach((id,i)=>{ const x=60+i*(R0*2+8)+R0, y=575; const im=crewImgs[id];
+    g.save(); g.beginPath(); g.arc(x,y,R0,0,Math.PI*2); g.closePath(); g.clip(); if(im&&im.complete) g.drawImage(im,x-R0,y-R0,R0*2,R0*2); g.restore(); g.strokeStyle='#ffd860'; g.lineWidth=3; g.beginPath(); g.arc(x,y,R0,0,Math.PI*2); g.stroke(); });
+  g.font=`800 22px ${F}`; g.fillStyle='rgba(255,255,255,.9)'; g.textAlign='right'; g.fillText('#とんでけモモンガ  #ジャンピンカックー',W-40,H-36); g.textAlign='left';
+  scoreURL=c.toDataURL('image/png'); $('scoreImg').src=scoreURL;
+  c.toBlob(b=>{ if(!b) return; scoreBlob=b;
+    try{ const f=new File([b],'momonga-score.png',{type:'image/png'}); $('scShare').style.display=(navigator.canShare&&navigator.canShare({files:[f]}))?'':'none'; }catch(e){} },'image/png');
+}
+function scMsg(t){ $('scMsg').textContent=t; }
+$('scCopy').addEventListener('click',async()=>{ if(!scoreBlob) return; try{ await navigator.clipboard.write([new ClipboardItem({'image/png':scoreBlob})]); scMsg('コピーしました！ 𝕏でポスト → 投稿欄で Ctrl+V（スマホは長押しで貼り付け）'); }catch(e){ scMsg('この画面ではコピーできませんでした。「画像を保存」か、画像を右クリック／長押しで保存してください'); } });
+$('scSave').addEventListener('click',()=>{ if(!scoreURL) return; try{ const a=document.createElement('a'); a.href=scoreURL; a.download='momonga-score.png'; document.body.appendChild(a); a.click(); a.remove(); scMsg('保存しました。𝕏の投稿に画像をつけてね'); }catch(e){ scMsg('保存できない時は、画像を右クリック／長押しで保存してください'); } });
+$('scShare').addEventListener('click',async()=>{ if(!scoreBlob) return; try{ await navigator.share({files:[new File([scoreBlob],'momonga-score.png',{type:'image/png'})],text:shareText()}); }catch(e){} });
+function shareText(){ const s=save.stats; return `「モモンガと光の森」で100個集めてクリア！🐿️🌰\n⏱ ${fmtTime(save.clearTime||effTime())}／最大${s.maxCombo}コンボ\nさぁ、行けっ！──モモンガ！今、風となれ！\n#とんでけモモンガ #ジャンピンカックー`; }
 function fillResult(){
-  const s=save.stats;
-  renderRankEntry();
+  const s=save.stats; setTimeout(makeScoreImage,60);
   $('clearStats').innerHTML=`<div class="tline">⏱ クリアタイム <b>${fmtTime(save.clearTime||effTime())}</b><small>プレイ ${fmtTime(save.clearRaw||s.time)} − コンボ ${(save.clearBonus||s.cbonus||0).toFixed(1)}秒${(save.clearAch||s.abonus)?' − 実績コンプ 60秒':''}</small></div><div>🔥 最大コンボ<br><b>${s.maxCombo}</b></div><div>🪂 カックー回数<br><b>${s.glides}</b></div><div>🌳 かくれた回数<br><b>${s.hides}</b></div><div>🐿️ 仲間<br><b>${Object.keys(crew).length}/${CREW.length}</b></div><div>🍄 ぽよよん<br><b>${s.bounces}</b></div>`;
   const text=`「モモンガと光の森」でナッツを100個集めてクリア！🐿️🌰\n⏱ タイム ${fmtTime(save.clearTime||s.time)}／最大${s.maxCombo}コンボ／カックー${s.glides}回\nさぁ、行けっ！──モモンガ！今、風となれ！\n#とんでけモモンガ #ジャンピンカックー #opsm`;
   $('shareX').href='https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent('https://youtu.be/XjL1bWc2ZJs');
@@ -2855,6 +2888,7 @@ function update(dt){
 /* adaptive quality: keep it smooth */
 let perfAcc=0, perfN=0, perfT=0, prLevel=renderer.getPixelRatio(), useBloom=!isTouch;
 const PR_MAX=renderer.getPixelRatio();
+function snapScene(){ if(useBloom) composer.render(); else renderer.render(scene,camera); return renderer.domElement; }
 function frame(){
   const raw=clock.getDelta(); const dt=Math.min(raw, 1/30);
   const paused= started && !fest.on && ['menuPanel','setPanel','helpPanel','zukanPanel','achPanel','rankPanel'].some(id=>$(id).style.display==='flex');
