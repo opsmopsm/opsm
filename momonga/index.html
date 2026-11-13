@@ -2527,12 +2527,13 @@ $('scSave').addEventListener('click',async()=>{ if(!scoreURL) return;
   if(dlNS && scoreBlob){ try{ await dlNS.save({filename:'momonga-score.png',data:scoreBlob}); scMsg('保存しました。𝕏の投稿に画像をつけてね'); }catch(e){ if(e&&e.code==='declined') scMsg('保存をやめました'); else scMsg('保存できない時は、画像を右クリック／長押しで保存してください'); } return; }
   try{ const a=document.createElement('a'); a.href=scoreURL; a.download='momonga-score.png'; document.body.appendChild(a); a.click(); a.remove(); scMsg('保存しました。𝕏の投稿に画像をつけてね'); }catch(e){ scMsg('保存できない時は、画像を右クリック／長押しで保存してください'); } });
 $('scShare').addEventListener('click',async()=>{ if(!scoreBlob) return; try{ await navigator.share({files:[new File([scoreBlob],'momonga-score.png',{type:'image/png'})],text:shareText()}); }catch(e){} });
-function shareText(){ const s=save.stats; return `「モモンガと光の森」で100個集めてクリア！🐿️🌰\n${devOf().icon}${devOf().name} ⏱ ${fmtTime(save.clearTime||effTime())}／最大${s.maxCombo}コンボ\nさぁ、行けっ！──モモンガ！今、風となれ！\n#とんでけモモンガ #ジャンピンカックー`; }
+const GAME_URL='https://opsmopsm.github.io/opsm/momonga/';
+function shareText(){ const s=save.stats; return `「モモンガと光の森」で100個集めてクリア！🐿️🌰\n${devOf().icon}${devOf().name} ⏱ ${fmtTime(save.clearTime||effTime())}／最大${s.maxCombo}コンボ\nさぁ、行けっ！──モモンガ！今、風となれ！\n#とんでけモモンガ #ジャンピンカックー\n${GAME_URL}`; }
 function fillResult(){
   const s=save.stats; setTimeout(makeScoreImage,60);
   $('clearStats').innerHTML=`<div class="tline">${devOf().icon}${devOf().name}でプレイ　⏱ クリアタイム <b>${fmtTime(save.clearTime||effTime())}</b><small>プレイ ${fmtTime(save.clearRaw||s.time)} − コンボ ${(save.clearBonus||s.cbonus||0).toFixed(1)}秒${(save.clearAch||s.abonus)?' − 実績コンプ 60秒':''}</small></div><div>🔥 最大コンボ<br><b>${s.maxCombo}</b></div><div>🪂 カックー回数<br><b>${s.glides}</b></div><div>🌳 かくれた回数<br><b>${s.hides}</b></div><div>🐿️ 仲間<br><b>${Object.keys(crew).length}/${CREW.length}</b></div><div>🍄 ぽよよん<br><b>${s.bounces}</b></div>`;
   const text=`「モモンガと光の森」でナッツを100個集めてクリア！🐿️🌰\n${devOf().icon}${devOf().name} ⏱ タイム ${fmtTime(save.clearTime||s.time)}／最大${s.maxCombo}コンボ／カックー${s.glides}回\nさぁ、行けっ！──モモンガ！今、風となれ！\n#とんでけモモンガ #ジャンピンカックー #opsm`;
-  $('shareX').href='https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent('https://youtu.be/XjL1bWc2ZJs');
+  $('shareX').href='https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(GAME_URL);
 }
 function endFestivalShow(fast){
   fest.showDone=true; crowdBed(false); if(!fast) cheerSwell(); fillResult();
@@ -2819,7 +2820,7 @@ function update(dt){
   for(const sp2 of airSpots) if(sp2.t>0) sp2.t-=dt;
   if(started && feverT<=0 && !fest.on){ goldT-=dt; if(goldT<=0){ goldT=42+Math.random()*20; if(!items.some(i=>i.kind==='gold')){ const p=drySpot(mo.position.x,mo.position.z,3,8,2.5); spawnItem('gold',p.x,groundAt(p.x,p.z,9).h,p.z); say('あっ、金色のなにか…！',{gold:true,force:true}); } } }
   if(feverT>0){ feverT-=dt; feverSpawnT-=dt;
-    if(feverSpawnT<=0 && feverCount<(isTouch?50:16)){ feverSpawnT=feverCount<6?.07:.3; const ks=KINDS.filter(k=>save.unlocked[k] && remaining(k)-pendingOf(k)>0);
+    if(feverSpawnT<=0 && feverCount<(isTouch?25:16)){ feverSpawnT=feverCount<6?.07:.3; const ks=KINDS.filter(k=>save.unlocked[k] && remaining(k)-pendingOf(k)>0);
       if(ks.length){ const k=ks[(Math.random()*ks.length)|0]; const p=drySpot(mo.position.x,mo.position.z,1.2,5.5,.8); const fi=spawnItem(k,p.x,6+Math.random()*3,p.z,'air',new THREE.Vector3(0,-2,0)); if(fi){ fi.fever=true; fi.glow.material=fi.glow.material.clone(); } feverCount++; } }
     if(feverT<=0) $('fever').classList.remove('on'); }
   const mouthW=mouthG.getWorldPosition(new THREE.Vector3());
