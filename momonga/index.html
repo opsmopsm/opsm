@@ -2504,7 +2504,10 @@ function makeScoreImage(){
 }
 function scMsg(t){ $('scMsg').textContent=t; }
 $('scCopy').addEventListener('click',async()=>{ if(!scoreBlob) return; try{ await navigator.clipboard.write([new ClipboardItem({'image/png':scoreBlob})]); scMsg('コピーしました！ 𝕏でポスト → 投稿欄で Ctrl+V（スマホは長押しで貼り付け）'); }catch(e){ scMsg('この画面ではコピーできませんでした。「画像を保存」か、画像を右クリック／長押しで保存してください'); } });
-$('scSave').addEventListener('click',()=>{ if(!scoreURL) return; try{ const a=document.createElement('a'); a.href=scoreURL; a.download='momonga-score.png'; document.body.appendChild(a); a.click(); a.remove(); scMsg('保存しました。𝕏の投稿に画像をつけてね'); }catch(e){ scMsg('保存できない時は、画像を右クリック／長押しで保存してください'); } });
+let dlNS; (async()=>{ try{ const C=window.claude; if(C&&typeof C.use==='function') dlNS=await C.use('downloads'); }catch(e){} })();
+$('scSave').addEventListener('click',async()=>{ if(!scoreURL) return;
+  if(dlNS && scoreBlob){ try{ await dlNS.save({filename:'momonga-score.png',data:scoreBlob}); scMsg('保存しました。𝕏の投稿に画像をつけてね'); }catch(e){ if(e&&e.code==='declined') scMsg('保存をやめました'); else scMsg('保存できない時は、画像を右クリック／長押しで保存してください'); } return; }
+  try{ const a=document.createElement('a'); a.href=scoreURL; a.download='momonga-score.png'; document.body.appendChild(a); a.click(); a.remove(); scMsg('保存しました。𝕏の投稿に画像をつけてね'); }catch(e){ scMsg('保存できない時は、画像を右クリック／長押しで保存してください'); } });
 $('scShare').addEventListener('click',async()=>{ if(!scoreBlob) return; try{ await navigator.share({files:[new File([scoreBlob],'momonga-score.png',{type:'image/png'})],text:shareText()}); }catch(e){} });
 function shareText(){ const s=save.stats; return `「モモンガと光の森」で100個集めてクリア！🐿️🌰\n⏱ ${fmtTime(save.clearTime||effTime())}／最大${s.maxCombo}コンボ\nさぁ、行けっ！──モモンガ！今、風となれ！\n#とんでけモモンガ #ジャンピンカックー`; }
 function fillResult(){
