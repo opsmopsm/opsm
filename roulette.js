@@ -105,6 +105,7 @@ $$('#drawer a').forEach(a => a.addEventListener('click', () => $('#drawer').clas
 const GAMES = [
   { t: '満員電車サバイバー', sub: '〜サラリーマン通勤あるある〜', d: '通勤あるあるをミニゲームに。満員電車を生きのびろ！ブラウザですぐ遊べます。', u: 'mansha/', img: 'img/mansha.webp', st: 'あそべる' },
   { t: '芽室まちもり大作戦！', sub: 'AIコミソンフェス in 芽室町', d: 'AIコミソンフェス in 芽室町のために作ったゲーム。', u: null, img: null, st: '公開準備中' },
+  { t: '紅葉ノ異界', sub: 'Three.jsのドット絵紅葉', d: '紅葉に包まれた異界を360°見わたせるドット絵の3D風景。黄昏・宵・夜で光が移ろい、湖畔・橋の上・樹の下を巡れます。', u: 'koyo/', img: 'img/koyo.webp', st: 'あそべる' },
   { t: 'SKY CITY', sub: 'Three.jsの未来都市', d: 'ブラウザの中に浮かぶ3Dの未来都市。ぐるっと見回して遊べます。', u: 'skycity/', img: null, st: 'あそべる' },
   { t: 'ChordTab', sub: '自作コード譜ツール', d: 'コード譜を書いて、見て、弾くための自作ツール。', u: 'https://opsmopsm.github.io/chordtab/', img: null, st: 'ツール' },
 ];
